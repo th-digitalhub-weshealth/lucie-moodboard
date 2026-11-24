@@ -649,7 +649,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 }
 .routine.on .routine-step { opacity: 1; transform: none; }
 .routine-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 4px; }
-.routine-title { font-size: 20px; font-weight: 500; letter-spacing: -0.015em; line-height: 24px; color: var(--ink); }
+.routine-title { font-size: 19px; font-weight: 400; letter-spacing: -0.01em; line-height: 24px; color: var(--plum-deep); }
 .routine-sub { font-size: 14px; line-height: 18px; color: var(--muted-strong); }
 .routine-img {
   position: relative;

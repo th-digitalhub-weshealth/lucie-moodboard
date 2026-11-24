@@ -621,10 +621,10 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 
 [data-step] {
   opacity: 0;
-  transition: opacity 300ms var(--ease-out), transform 400ms var(--ease-out);
+  transition: opacity 500ms var(--ease-out), transform 650ms var(--ease-out);
 }
 [data-step].on { opacity: 1; transform: none; }
-.thread.is-out [data-step] { opacity: 0; transition-duration: 400ms; }
+.thread.is-out [data-step] { opacity: 0; transition-duration: 550ms; }
 
 .bubble {
   align-self: flex-end;
@@ -633,7 +633,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   border-radius: 20px 20px 6px 20px;
   background: #edddff;
   line-height: 21px;
-  transform: translateY(8px) scale(0.96);
+  transform: translateY(6px) scale(0.98);
   transform-origin: 100% 100%;
 }
 
@@ -661,8 +661,8 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   opacity: 0;
   transform: translateY(4px);
   filter: blur(2px);
-  transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out), filter 300ms var(--ease-out);
-  transition-delay: calc(var(--i) * 45ms);
+  transition: opacity 450ms var(--ease-out), transform 450ms var(--ease-out), filter 450ms var(--ease-out);
+  transition-delay: calc(var(--i) * 50ms);
 }
 .reply.on .word { opacity: 1; transform: none; filter: none; }
 
@@ -691,8 +691,8 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 .routine-step {
   display: flex; flex-direction: column; gap: 10px; min-width: 0;
   opacity: 0; transform: translateY(6px);
-  transition: opacity 300ms var(--ease-out), transform 400ms var(--ease-out);
-  transition-delay: calc(var(--i) * 70ms);
+  transition: opacity 500ms var(--ease-out), transform 650ms var(--ease-out);
+  transition-delay: calc(var(--i) * 90ms);
 }
 .routine.on .routine-step { opacity: 1; transform: none; }
 .routine-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 4px; }

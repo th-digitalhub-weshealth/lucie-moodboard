@@ -87,10 +87,10 @@
       thread.style.height = `${from}px`;
       void thread.offsetHeight;
       // Inline, because the scroll-reveal class owns this tile's `transition` property.
-      thread.style.transition = 'height 450ms var(--ease-out)';
+      thread.style.transition = 'height 750ms cubic-bezier(0.65, 0, 0.35, 1)'; // soft in-out
       thread.style.height = `${to}px`;
       clearTimeout(settle);
-      settle = setTimeout(() => { thread.style.height = ''; thread.style.transition = ''; }, 500);
+      settle = setTimeout(() => { thread.style.height = ''; thread.style.transition = ''; }, 800);
     }
 
     const show = (name, on = true) => step(name).classList.toggle('on', on);
@@ -120,17 +120,17 @@
         thread.classList.remove('is-out');
         await wait(500);
         await exchange('', [['card', 650], ['feedback', 550]]);
-        await wait(1600);
+        await wait(250);
         await whenVisible();
         grow(() => setSecond(true)); // stage 2: make room for the whole follow-up
-        await wait(550);
+        await wait(500); // the question appears as the growth settles
         await exchange('2', [['routine', 650], ['feedback2', 900]]);
         await wait(5200);
         thread.classList.add('is-out');
-        await wait(450);
+        await wait(600);
         reset();
         grow(() => setSecond(false)); // back to stage 1
-        await wait(900);
+        await wait(1100);
       }
     })();
   }

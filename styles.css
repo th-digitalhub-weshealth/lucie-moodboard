@@ -560,7 +560,6 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 
 .thread {
   flex: 1 1 0;
-  height: 336px;
   padding: 36px;
   /* Full-width tile, but the conversation keeps its old column width (784px) and sits centred. */
   padding-inline: max(36px, calc((100% - 784px) / 2));
@@ -591,7 +590,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 .answer { width: 75%; display: flex; flex-direction: column; gap: 14px; }
 .answer-head { display: flex; align-items: center; gap: 10px; }
 .answer-star .star { width: 18px; height: 18px; rotate: 45deg; }
-.thread.is-thinking .answer-star .spin { animation: think 1.1s linear infinite; }
+.answer.is-thinking .answer-star .spin { animation: think 1.1s linear infinite; }
 @keyframes think { to { rotate: 360deg; } }
 
 .answer-stack { display: grid; }
@@ -634,6 +633,51 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 .compat-cell.pm { background: linear-gradient(in oklab 160deg, #e1c6ff80, #fffefe); border-left: 1px solid #ead7ff; }
 
 .feedback { display: flex; gap: 4px; margin-top: -6px; }
+
+/* Follow-up: Lucie builds a morning routine (Paper "Conversation" 1OM-0, one selected product per step). */
+.answer-routine { width: 100%; }
+.routine { display: flex; flex-direction: column; gap: 22px; transform: translateY(10px); }
+.routine-wave { display: block; width: 100%; height: 8px; overflow: hidden; }
+.routine-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.routine-step {
+  display: flex; flex-direction: column; gap: 10px; min-width: 0;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 300ms var(--ease-out), transform 400ms var(--ease-out);
+  transition-delay: calc(var(--i) * 70ms);
+}
+.routine.on .routine-step { opacity: 1; transform: none; }
+.routine-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 4px; }
+.routine-head > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.routine-title { font-size: 20px; font-weight: 500; letter-spacing: -0.015em; line-height: 24px; color: var(--ink); }
+.routine-sub { font-size: 14px; line-height: 18px; color: var(--muted-strong); min-height: 36px; }
+.routine-refresh { flex: none; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 999px; background: var(--lilac-soft); }
+.routine-img {
+  position: relative;
+  height: 150px;
+  display: grid; place-items: center;
+  border: 1.5px solid #dcc4f5;
+  border-radius: 14px;
+  background: #f3f4f6;
+  overflow: clip;
+}
+.routine-img img { width: 118px; height: 118px; object-fit: contain; mix-blend-mode: multiply; }
+.routine-check { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 999px; background: var(--plum); }
+.routine-name {
+  font-size: 14px; line-height: 18px; color: var(--ink);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; min-height: 36px;
+}
+.routine-price { margin-top: -7px; font-size: 15px; font-weight: 500; line-height: 20px; color: var(--ink); }
+.routine-cta {
+  height: 52px;
+  margin-top: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  border-radius: 999px;
+  background: var(--plum);
+  color: #fffefe;
+  font-size: 16px; font-weight: 500; line-height: 20px;
+  transform: translateY(8px);
+}
+.routine-total { color: #fffefeb3; font-weight: 400; }
 .feedback > span { width: 32px; height: 32px; display: grid; place-items: center; }
 .feedback .flip svg { rotate: 180deg; }
 
@@ -884,6 +928,8 @@ button.chip:active { transform: scale(0.97); }
   .sparkle-photo { background-size: cover; background-position: 70% 30%; }
   .thread { height: auto; min-height: 336px; padding: 24px; }
   .answer { width: 100%; }
+  .routine-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
+  .row-chat .thread { flex: none; }
   .picks { flex: none; padding: 24px; }
   .chips { overflow: hidden; }
   .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -901,9 +947,10 @@ button.chip:active { transform: scale(0.97); }
   .wash > svg, .glow, .ask-btn, .spin, .logo-sheen, .star-glint,
   .ask-cursor, .ask-btn::after, .ask-orb .star, .ask-label,
   .lucie-pill, .lucie-pill-label,
-  .thread.is-thinking .answer-star .spin, .verbs-star .spin,
+  .answer.is-thinking .answer-star .spin, .verbs-star .spin,
   .verb, .verb.is-leaving,
   .skeleton .product-img::after, .skeleton .bar::after { animation: none !important; }
   .lucie-pill-label { background-position: 0% 0; }
+  .routine-step, .routine, .routine-cta,
   [data-step], .bubble, .compat, .reply .word, .product, .verb { transform: none !important; filter: none !important; }
 }

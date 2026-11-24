@@ -64,34 +64,44 @@
   const thread = document.querySelector('[data-thread]');
   if (thread) {
     const step = (name) => thread.querySelector(`[data-step="${name}"]`);
-    const reply = step('reply');
-    reply.innerHTML = reply.textContent.trim().split(' ')
-      .map((w, i) => `<span class="word" style="--i:${i}">${w}</span>`).join(' ');
+    const answers = thread.querySelectorAll('.answer');
+    thread.querySelectorAll('.reply').forEach((reply) => {
+      reply.innerHTML = reply.textContent.trim().split(' ')
+        .map((w, i) => `<span class="word" style="--i:${i}">${w}</span>`).join(' ');
+    });
 
     const show = (name, on = true) => step(name).classList.toggle('on', on);
     const whenVisible = watchVisibility(thread);
+
+    // One exchange: question, Lucie thinks, answers word by word, then her content builds in.
+    async function exchange(n, answer, content) {
+      show(`user${n}`);
+      await wait(800);
+      answer.classList.add('is-thinking');
+      show(`thinking${n}`);
+      await wait(1800);
+      show(`thinking${n}`, false);
+      answer.classList.remove('is-thinking');
+      show(`reply${n}`);
+      for (const [name, pause] of content) {
+        await wait(pause);
+        show(name);
+      }
+    }
 
     (async function loop() {
       for (;;) {
         await whenVisible();
         thread.classList.remove('is-out');
         await wait(500);
-        show('user');
-        await wait(800);
-        thread.classList.add('is-thinking');
-        show('thinking');
+        await exchange('', answers[0], [['card', 650], ['feedback', 550]]);
         await wait(1800);
-        show('thinking', false);
-        thread.classList.remove('is-thinking');
-        show('reply');
-        await wait(650);
-        show('card');
-        await wait(550);
-        show('feedback');
-        await wait(4200);
+        await whenVisible();
+        await exchange('2', answers[1], [['routine', 650], ['cta', 700], ['feedback2', 450]]);
+        await wait(5200);
         thread.classList.add('is-out');
         await wait(500);
-        ['user', 'reply', 'card', 'feedback'].forEach((n) => show(n, false));
+        ['user', 'reply', 'card', 'feedback', 'user2', 'reply2', 'routine', 'cta', 'feedback2'].forEach((n) => show(n, false));
         await wait(700);
       }
     })();

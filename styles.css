@@ -91,7 +91,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 .row-1 { height: 640px; }
 .row-2 { height: 400px; } /* was 760px with the chat stacked above the picks (336 + 24 gap) */
 .row-3 { height: 560px; }
-.row-4 { height: 420px; }
+.row-4 { height: 440px; }
 .row-5 { height: 320px; }
 
 .col-s { flex: 0 0 calc((100% - 2 * var(--gap)) / 3); min-width: 0; }
@@ -893,6 +893,27 @@ button.chip:active { transform: scale(0.97); }
 }
 .quiz-q { font-size: 24px; line-height: 32px; font-weight: 500; letter-spacing: -0.015em; }
 .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+/* Single-tap answers (Paper "Conversation" 1MB-0): icon tiles, one selected. */
+.taps {
+  display: flex; flex-direction: column; justify-content: center; gap: 24px;
+  padding: 40px 48px;
+  border-radius: var(--radius-m);
+}
+.taps-q { display: flex; align-items: center; gap: 10px; font-size: 18px; line-height: 24px; color: var(--ink); }
+.taps-star { width: 18px; height: 18px; rotate: 45deg; flex: none; }
+.taps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.tap-opt {
+  height: 136px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 22px 16px 20px;
+  border: 1px solid #ede6ec;
+  border-radius: 16px;
+  background: #fffefe;
+}
+.tap-opt svg { width: 30px; height: 30px; }
+.tap-opt b { font-size: 16px; font-weight: 500; line-height: 20px; color: var(--ink); }
+.tap-opt.is-selected { border-color: #dcc4f5; background: linear-gradient(in oklab 160deg, #e1c6ff80 0%, #fffefe 100%) border-box; }
+
 .opt {
   display: flex; flex-direction: column; gap: 2px;
   padding: 12px 14px;
@@ -989,6 +1010,9 @@ button.chip:active { transform: scale(0.97); }
   .answer { width: 100%; }
   .routine-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
   .routine-sub { min-height: 36px; }
+  .taps { padding: 28px 24px; }
+  .taps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tap-opt { height: 116px; }
   .row-chat .thread { flex: none; }
   .picks { flex: none; padding: 24px; }
   .chips { overflow: hidden; }

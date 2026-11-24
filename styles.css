@@ -172,7 +172,45 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   aspect-ratio: 169.45 / 63.03;
 }
 .logo svg { width: 100%; height: 100%; }
-.logo .spin { animation: star-turn 7s 1.6s infinite, star-pop 7s 1.6s infinite; }
+
+/* Wordmark shimmer: a plum → #e0aed0 band sweeps through the letters (clip path),
+   2.2s on the pill's curve, every 6s. Only transform and opacity animate.
+   The star over the "i" twinkles as the band passes it (~14% into the cycle). */
+.logo {
+  --shimmer-cycle: 6s;
+  --shimmer-delay: 0.8s;
+  --ease-shimmer: cubic-bezier(0.65, 0, 0.35, 1);
+}
+.logo-sheen {
+  transform-box: fill-box;
+  animation: logo-sheen var(--shimmer-cycle) var(--shimmer-delay) infinite both;
+}
+.logo .spin { animation: star-twinkle var(--shimmer-cycle) var(--shimmer-delay) infinite both; }
+.star-glint {
+  opacity: 0;
+  animation: star-glint var(--shimmer-cycle) var(--shimmer-delay) infinite both;
+}
+/* Paused while scrolled away (JS adds .is-live when on screen). */
+.js .logo:not(.is-live) .logo-sheen,
+.js .logo:not(.is-live) .spin,
+.js .logo:not(.is-live) .star-glint { animation-play-state: paused; }
+
+@keyframes logo-sheen {
+  0% { transform: translateX(0); animation-timing-function: var(--ease-shimmer); }
+  36.667%, 100% { transform: translateX(66.667%); }
+}
+@keyframes star-twinkle {
+  0%, 9% { rotate: 0deg; scale: 1; }
+  9% { animation-timing-function: var(--ease-out); }
+  14% { scale: 1.28; animation-timing-function: var(--ease-in-out); }
+  24%, 100% { rotate: 90deg; scale: 1; }
+}
+@keyframes star-glint {
+  0%, 9% { opacity: 0; }
+  9% { animation-timing-function: var(--ease-out); }
+  14% { opacity: 0.9; animation-timing-function: var(--ease-in-out); }
+  26%, 100% { opacity: 0; }
+}
 
 /* ---------- Row 1 · Ask Lucie ---------- */
 
@@ -636,7 +674,7 @@ button.chip:active { transform: scale(0.97); }
 @media (prefers-reduced-motion: reduce) {
   .js .reveal { transform: none; }
   .js .reveal.is-in { transition: opacity 400ms ease var(--reveal-delay, 0ms); }
-  .wash > svg, .glow, .ask-btn, .spin,
+  .wash > svg, .glow, .ask-btn, .spin, .logo-sheen, .star-glint,
   .thread.is-thinking .answer-star .spin, .verbs-star .spin,
   .verb, .verb.is-leaving,
   .skeleton .product-img::after, .skeleton .bar::after { animation: none !important; }

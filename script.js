@@ -29,6 +29,15 @@
 
   document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
 
+  /* ---------- Wordmark shimmer: only runs while on screen ---------- */
+
+  const logo = document.querySelector('[data-logo-shimmer]');
+  if (logo && !reduceMotion) {
+    new IntersectionObserver(([entry]) => {
+      logo.classList.toggle('is-live', entry.isIntersecting);
+    }).observe(logo);
+  }
+
   /* ---------- Thinking verbs ---------- */
 
   const verbsTile = document.querySelector('[data-verbs]');

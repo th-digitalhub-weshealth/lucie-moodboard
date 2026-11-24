@@ -592,13 +592,17 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   background-image: url("assets/photo-routine.webp");
   background-position: 50% 30%;
 }
+/* Selected-chip skin: pale Lucie gradient fill, lilac → blush → aqua hairline stroke, plum label. */
 .pill {
   display: flex; align-items: center; gap: 8px;
-  padding: 12.5px 14.5px;
-  border: 1px solid #dcc4f5;
-  border-radius: 14px;
-  background: linear-gradient(in oklab 160deg, #e1c6ff80, #fffefe);
-  font-size: 19px; line-height: 20px;
+  padding: 12px 20px 12px 16px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(in oklab 100deg, #f1e4fd, #fbeff4 60%, #e8f5f7) padding-box,
+    linear-gradient(in oklab 100deg, #d9b6f5, #f2b8da 50%, #a9dce4) border-box;
+  color: var(--plum-deep);
+  font-size: 18px; font-weight: 500; line-height: 20px;
 }
 .pill .star { width: 14px; height: 14px; rotate: 45deg; }
 .pill .spin { animation: star-turn 6s 3.2s infinite, star-pop 6s 3.2s infinite; }

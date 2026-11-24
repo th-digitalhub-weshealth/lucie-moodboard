@@ -29,13 +29,13 @@
 
   document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
 
-  /* ---------- Wordmark shimmer: only runs while on screen ---------- */
+  /* ---------- Wordmark shimmer + Ask Lucie demo: only run while on screen ---------- */
 
-  const logo = document.querySelector('[data-logo-shimmer]');
-  if (logo && !reduceMotion) {
-    new IntersectionObserver(([entry]) => {
-      logo.classList.toggle('is-live', entry.isIntersecting);
-    }).observe(logo);
+  if (!reduceMotion) {
+    const liveObserver = new IntersectionObserver((entries) => {
+      entries.forEach((e) => e.target.classList.toggle('is-live', e.isIntersecting));
+    });
+    document.querySelectorAll('[data-logo-shimmer], [data-live]').forEach((el) => liveObserver.observe(el));
   }
 
   /* ---------- Thinking verbs ---------- */

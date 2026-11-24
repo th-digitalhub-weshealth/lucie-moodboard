@@ -10,6 +10,11 @@
   inherits: false;
   initial-value: 100deg;
 }
+@property --border-boost {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
 
 :root {
   --font: "Jost Atomica", system-ui, sans-serif;
@@ -222,7 +227,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   position: relative;
   padding: 2px;
   border-radius: 999px;
-  background: conic-gradient(from var(--border-angle) in oklab, #d9b6f5, #f2b8da, #f4c9dd, #a9dce4, #d9b6f5);
+  background: conic-gradient(from calc(var(--border-angle) + var(--border-boost)) in oklab, #d9b6f5, #f2b8da, #f4c9dd, #a9dce4, #d9b6f5);
   box-shadow: 0 30px 60px -10px #813f6238, 0 8px 18px #813f6214;
   animation: border-turn 6s linear infinite;
 }
@@ -275,72 +280,89 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   -webkit-text-fill-color: transparent;
 }
 .ask-cursor {
-  position: absolute; right: 14px; bottom: -66px; width: 56px; height: 78px;
+  position: absolute; right: 14px; bottom: -56px; width: 56px; height: 78px;
   pointer-events: none;
   transform-origin: 7% 6%; /* the arrow's tip */
 }
 
-/* "Someone asks Lucie" demo, 5s loop (1% = 50ms):
-   cursor glides in 0.4–1.0s → hover lift + star turn 1.0s → press 1.6s (120ms) →
-   release → label shimmer 1.8–4.0s → cursor leaves 2.5–3.2s → rest. */
+/* "Someone asks Lucie" demo, 5s loop (1% = 50ms). Everything is anchored to H = 0.71s (14.2%),
+   the frame where the cursor tip crosses into the pill:
+   cursor glides in 0.4–1.1s (ease-out) → at H: lift, star spin, shimmer, border boost →
+   press 1.5s (120ms) → release → cursor leaves 2.5s, pill settles as the tip exits (2.65s) → rest. */
 .ask-demo { --ask-cycle: 5s; }
-.ask-cursor   { animation: ask-cursor var(--ask-cycle) infinite both; }
-.ask-btn      { animation: border-turn 6s linear infinite, ask-pill var(--ask-cycle) infinite both; }
+.ask-cursor   { animation: ask-cursor var(--ask-cycle) infinite both, ask-cursor-fade var(--ask-cycle) infinite both; }
+.ask-btn      { animation: border-turn 6s linear infinite, ask-pill var(--ask-cycle) infinite both, ask-boost var(--ask-cycle) infinite both; }
 .ask-btn::after { animation: ask-shadow var(--ask-cycle) infinite both; }
 .ask-orb .star { animation: ask-star var(--ask-cycle) infinite both; }
 .ask-label    { animation: ask-shimmer var(--ask-cycle) infinite both; }
 
 @keyframes ask-cursor {
-  0%, 8% { translate: 46px 58px; scale: 1; opacity: 0; animation-timing-function: var(--ease-in-out); }
-  14% { opacity: 1; }
-  20% { translate: 0 0; }
-  32% { scale: 1; animation-timing-function: var(--ease-out); }
-  34.4% { scale: 0.9; animation-timing-function: var(--ease-out); }
-  38.4% { scale: 1; }
-  50% { translate: 0 0; opacity: 1; animation-timing-function: var(--ease-in-out); }
-  60% { opacity: 0; }
-  64%, 100% { translate: 40px 52px; opacity: 0; }
+  0%, 8% { translate: 46px 58px; scale: 1; animation-timing-function: var(--ease-out); }
+  22% { translate: 0 0; }
+  30% { scale: 1; animation-timing-function: var(--ease-out); }
+  32.4% { scale: 0.9; animation-timing-function: var(--ease-out); }
+  36.4% { scale: 1; }
+  50% { translate: 0 0; animation-timing-function: var(--ease-out); }
+  64%, 100% { translate: 40px 52px; }
 }
-@keyframes ask-pill {
-  0%, 20% { translate: 0 0; scale: 1; animation-timing-function: var(--ease-out); }
-  24% { translate: 0 -2px; }
-  32% { scale: 1; animation-timing-function: var(--ease-out); }
-  34.4% { scale: 0.97; animation-timing-function: var(--ease-out); }
-  38.4% { scale: 1; }
-  52% { translate: 0 -2px; animation-timing-function: var(--ease-in-out); }
-  60%, 100% { translate: 0 0; scale: 1; }
-}
-@keyframes ask-shadow {
-  0%, 20% { opacity: 0; animation-timing-function: var(--ease-out); }
-  24%, 52% { opacity: 1; animation-timing-function: var(--ease-in-out); }
+@keyframes ask-cursor-fade {
+  0%, 8% { opacity: 0; animation-timing-function: var(--ease-out); }
+  11%, 50% { opacity: 1; animation-timing-function: var(--ease-out); }
   60%, 100% { opacity: 0; }
 }
-@keyframes ask-star {
-  0%, 20% { rotate: 45deg; scale: 1; animation-timing-function: var(--ease-out); }
-  25% { scale: 1.22; animation-timing-function: var(--ease-in-out); }
-  32%, 100% { rotate: 135deg; scale: 1; }
+@keyframes ask-pill {
+  0%, 14.2% { translate: 0 0; scale: 1; animation-timing-function: var(--ease-out); }
+  18.2% { translate: 0 -2px; }
+  30% { scale: 1; animation-timing-function: var(--ease-out); }
+  32.4% { scale: 0.97; animation-timing-function: var(--ease-out); }
+  36.4% { scale: 1; }
+  53% { translate: 0 -2px; animation-timing-function: var(--ease-out); }
+  58%, 100% { translate: 0 0; scale: 1; }
 }
+@keyframes ask-shadow {
+  0%, 14.2% { opacity: 0; animation-timing-function: var(--ease-out); }
+  18.2%, 53% { opacity: 1; animation-timing-function: var(--ease-out); }
+  58%, 100% { opacity: 0; }
+}
+/* Two fast extra turns of the stroke on hover, settling back to the slow 6s turn. */
+@keyframes ask-boost {
+  0%, 14.2% { --border-boost: 0deg; animation-timing-function: var(--ease-out); }
+  54.2%, 100% { --border-boost: 720deg; }
+}
+/* Full turn (45° → 405°): the loop's first and last frames are the same transform, so no jump. */
+@keyframes ask-star {
+  0%, 14.2% { rotate: 45deg; scale: 1; animation-timing-function: var(--ease-out); }
+  18.2% { scale: 1.22; animation-timing-function: var(--ease-in-out); }
+  30.2%, 100% { rotate: 405deg; scale: 1; }
+}
+/* 90% → 10% puts the band at the text's edge on the first and last frames, so it shows at once. */
 @keyframes ask-shimmer {
-  0%, 36% { background-position: 100% 0; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
-  80%, 100% { background-position: 0 0; }
+  0%, 14.2% { background-position: 90% 0; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+  58.2%, 100% { background-position: 10% 0; }
 }
 
-/* Real hover takes over from the demo (fine pointers only). */
+/* Real hover takes over from the demo (fine pointers only): same reactions, once, on entry. */
 @media (hover: hover) and (pointer: fine) {
   .ask-demo:hover .ask-cursor { animation: none; opacity: 0; transition: opacity 150ms var(--ease-out); }
   .ask-demo:hover .ask-btn {
-    animation: border-turn 6s linear infinite;
+    animation: border-turn 6s linear infinite, ask-boost-once 2s var(--ease-out) both;
     translate: 0 -2px;
     transition: translate 200ms var(--ease-out), scale 120ms var(--ease-out);
   }
   .ask-demo:hover .ask-btn:active { scale: 0.97; }
   .ask-demo:hover .ask-btn::after { animation: none; opacity: 1; transition: opacity 200ms var(--ease-out); }
-  .ask-demo:hover .ask-orb .star { animation: none; rotate: 135deg; transition: rotate 450ms var(--ease-in-out); }
+  .ask-demo:hover .ask-orb .star { animation: ask-star-once 800ms both; }
   .ask-demo:hover .ask-label { animation: ask-shimmer-once 2.2s cubic-bezier(0.65, 0, 0.35, 1) both; }
 }
+@keyframes ask-boost-once { from { --border-boost: 0deg; } to { --border-boost: 720deg; } }
+@keyframes ask-star-once {
+  0% { rotate: 45deg; scale: 1; animation-timing-function: var(--ease-out); }
+  25% { scale: 1.22; animation-timing-function: var(--ease-in-out); }
+  100% { rotate: 405deg; scale: 1; }
+}
 @keyframes ask-shimmer-once {
-  from { background-position: 100% 0; }
-  to { background-position: 0 0; }
+  from { background-position: 90% 0; }
+  to { background-position: 10% 0; }
 }
 
 /* Paused while scrolled away (JS adds .is-live when on screen). */

@@ -174,10 +174,10 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 .logo svg { width: 100%; height: 100%; }
 
 /* Wordmark shimmer: a plum → #e0aed0 band sweeps through the letters (clip path),
-   2.2s on the pill's curve, every 6s. Only transform and opacity animate.
-   The star over the "i" twinkles as the band passes it (~14% into the cycle). */
+   2.2s on the pill's curve, every 5s. Only transform and opacity animate.
+   The star over the "i" twinkles as the band passes it (~0.85s into the cycle). */
 .logo {
-  --shimmer-cycle: 6s;
+  --shimmer-cycle: 5s;
   --shimmer-delay: 0.8s;
   --ease-shimmer: cubic-bezier(0.65, 0, 0.35, 1);
 }
@@ -197,19 +197,19 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 
 @keyframes logo-sheen {
   0% { transform: translateX(0); animation-timing-function: var(--ease-shimmer); }
-  36.667%, 100% { transform: translateX(66.667%); }
+  44%, 100% { transform: translateX(66.667%); }
 }
 @keyframes star-twinkle {
-  0%, 9% { rotate: 0deg; scale: 1; }
-  9% { animation-timing-function: var(--ease-out); }
-  14% { scale: 1.28; animation-timing-function: var(--ease-in-out); }
-  24%, 100% { rotate: 90deg; scale: 1; }
+  0%, 10.8% { rotate: 0deg; scale: 1; }
+  10.8% { animation-timing-function: var(--ease-out); }
+  16.8% { scale: 1.28; animation-timing-function: var(--ease-in-out); }
+  28.8%, 100% { rotate: 90deg; scale: 1; }
 }
 @keyframes star-glint {
-  0%, 9% { opacity: 0; }
-  9% { animation-timing-function: var(--ease-out); }
-  14% { opacity: 0.9; animation-timing-function: var(--ease-in-out); }
-  26%, 100% { opacity: 0; }
+  0%, 10.8% { opacity: 0; }
+  10.8% { animation-timing-function: var(--ease-out); }
+  16.8% { opacity: 0.9; animation-timing-function: var(--ease-in-out); }
+  31.2%, 100% { opacity: 0; }
 }
 
 /* ---------- Row 1 · Ask Lucie ---------- */

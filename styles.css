@@ -89,7 +89,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 
 .row { display: flex; gap: var(--gap); }
 .row-1 { height: 640px; }
-.row-2 { height: 760px; }
+.row-2 { height: 400px; } /* was 760px with the chat stacked above the picks (336 + 24 gap) */
 .row-3 { height: 560px; }
 .row-4 { height: 420px; }
 .row-5 { height: 320px; }
@@ -559,9 +559,11 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 /* ---------- Row 2 · Thread ---------- */
 
 .thread {
-  flex: none;
+  flex: 1 1 0;
   height: 336px;
   padding: 36px;
+  /* Full-width tile, but the conversation keeps its old column width (784px) and sits centred. */
+  padding-inline: max(36px, calc((100% - 784px) / 2));
   display: flex;
   flex-direction: column;
   gap: 28px;

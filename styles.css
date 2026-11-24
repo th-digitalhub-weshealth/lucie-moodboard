@@ -217,7 +217,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   31.2%, 100% { opacity: 0; }
 }
 
-/* ---------- Row 2 · Lucie prompts ----------
+/* ---------- Row 4 · Lucie prompts ----------
    Ported from the storefront (AtomiaFrontEnd css/styles.css: .lucie-tile, .lucie-pill). Keep in step with it. */
 
 .row-prompts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }

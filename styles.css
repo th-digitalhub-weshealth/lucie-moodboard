@@ -219,7 +219,8 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 
 /* ---------- Row 1 · Ask Lucie ---------- */
 
-.ask-tile { flex: 1 1 0; display: flex; align-items: center; justify-content: center; }
+/* Row 1 right column: Ask Lucie and the thinking words share the logo tile's full height. */
+.ask-tile { flex: 2.4 1 0; display: flex; align-items: center; justify-content: center; }
 
 .ask-demo { position: relative; margin-top: -24px; }
 
@@ -380,8 +381,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 /* ---------- Row 1 · Thinking verbs ---------- */
 
 .verbs-tile {
-  flex: none;
-  height: 120px;
+  flex: 1 1 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -414,6 +414,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 
 /* ---------- Row 1 · Check ---------- */
 
+/* Parked (see <template id="parked-check-tile"> in index.html). */
 .check-tile {
   flex: none;
   display: flex;
@@ -778,6 +779,7 @@ button.chip:active { transform: scale(0.97); }
   .logo-tile { height: 420px; }
   .logo { width: 220px; }
   .ask-tile { height: 300px; flex: none; }
+  .verbs-tile { height: 120px; flex: none; }
   .routine-photo, .shade-photo, .sparkle-photo { height: 520px; }
   .sparkle-photo { background-size: cover; background-position: 70% 30%; }
   .thread { height: auto; min-height: 336px; padding: 24px; }

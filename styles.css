@@ -560,7 +560,6 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 
 .thread {
   flex: 1 1 0;
-  min-height: 120px;
   padding: 36px;
   /* Full-width tile, but the conversation keeps its old column width (784px) and sits centred. */
   padding-inline: max(36px, calc((100% - 784px) / 2));
@@ -568,9 +567,9 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   flex-direction: column;
   gap: 28px;
   border-radius: var(--radius-m);
-  /* script.js animates its height as messages arrive or leave, so the tile grows and shrinks. */
+  /* script.js grows it in two stages: first exchange, then room for the follow-up. */
 }
-/* Not-yet-shown messages take no space. */
+/* The follow-up takes no space until stage 2. */
 .thread [hidden] { display: none !important; }
 
 [data-step] {
@@ -918,7 +917,7 @@ button.chip:active { transform: scale(0.97); }
   .verbs-tile { height: 120px; flex: none; }
   .routine-photo, .shade-photo, .sparkle-photo { height: 520px; }
   .sparkle-photo { background-size: cover; background-position: 70% 30%; }
-  .thread { height: auto; min-height: 96px; padding: 24px; }
+  .thread { height: auto; padding: 24px; }
   .answer { width: 100%; }
   .routine-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
   .routine-sub { min-height: 36px; }

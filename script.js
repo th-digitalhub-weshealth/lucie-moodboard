@@ -69,14 +69,11 @@
         .map((w, i) => `<span class="word" style="--i:${i}">${w}</span>`).join(' ');
     });
 
-    // Blocks take no space until they're shown, so the tile fits what's there. Thinking/reply
-    // share one line, so they only fade.
-    const blocks = [...thread.querySelectorAll('[data-step]')]
-      .filter((el) => !/^(thinking|reply)/.test(el.dataset.step));
-    const hideAll = () => {
-      thread.querySelectorAll('[data-step]').forEach((el) => el.classList.remove('on'));
-      blocks.forEach((el) => { el.hidden = true; });
-    };
+    // The tile resizes in two stages: it's sized for the first exchange from the start, then grows
+    // once to fit the whole second exchange before that one plays. Content fades in inside the space.
+    const second = ['user2', 'answer2', 'routine', 'feedback2'].map(step);
+    const reset = () => thread.querySelectorAll('[data-step]').forEach((el) => el.classList.remove('on'));
+    const setSecond = (shown) => second.forEach((el) => { el.hidden = !shown; });
 
     // Animate the tile from its current height to the height after `change`.
     let settle;
@@ -96,11 +93,7 @@
       settle = setTimeout(() => { thread.style.height = ''; thread.style.transition = ''; }, 500);
     }
 
-    const show = (name, on = true) => {
-      const el = step(name);
-      if (on && el.hidden) grow(() => { el.hidden = false; });
-      el.classList.toggle('on', on);
-    };
+    const show = (name, on = true) => step(name).classList.toggle('on', on);
     const whenVisible = watchVisibility(thread);
 
     // One exchange: question, Lucie thinks, answers word by word, then her content builds in.
@@ -120,20 +113,23 @@
       }
     }
 
-    hideAll();
+    setSecond(false);
     (async function loop() {
       for (;;) {
         await whenVisible();
         thread.classList.remove('is-out');
         await wait(500);
         await exchange('', [['card', 650], ['feedback', 550]]);
-        await wait(1800);
+        await wait(1600);
         await whenVisible();
+        grow(() => setSecond(true)); // stage 2: make room for the whole follow-up
+        await wait(550);
         await exchange('2', [['routine', 650], ['feedback2', 900]]);
         await wait(5200);
         thread.classList.add('is-out');
         await wait(450);
-        grow(hideAll);
+        reset();
+        grow(() => setSecond(false)); // back to stage 1
         await wait(900);
       }
     })();

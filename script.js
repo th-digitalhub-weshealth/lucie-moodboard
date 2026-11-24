@@ -135,6 +135,52 @@
     })();
   }
 
+  /* ---------- Lucie prompt stack: a "user" swipes through the cards, endlessly ---------- */
+
+  const stack = document.querySelector('[data-stack]');
+  if (stack) {
+    let order = [...stack.querySelectorAll('.lucie-tile')];
+    const touch = stack.querySelector('.stack-touch');
+    const layout = () => order.forEach((card, i) => { card.dataset.depth = Math.min(i, 3); });
+    layout();
+
+    if (!reduceMotion) {
+      const whenVisible = watchVisibility(stack);
+      const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
+      const EASE_IN_OUT = 'cubic-bezier(0.77, 0, 0.175, 1)';
+      const move = (el, transform, ms, ease, extra = {}) =>
+        el.animate([{ transform, ...extra }], { duration: ms, easing: ease, fill: 'forwards' }).finished;
+
+      (async function swipe() {
+        for (;;) {
+          await wait(1600);
+          await whenVisible();
+          const card = order[0];
+          // Finger lands on the card.
+          touch.animate([{ opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1 }], { duration: 180, easing: EASE_OUT, fill: 'forwards' });
+          await wait(260);
+          // Drag: card and finger move left together; the card tilts as it's pulled.
+          await Promise.all([
+            move(card, 'translateX(-38px) rotate(-3deg)', 380, EASE_IN_OUT),
+            move(touch, 'translateX(-38px)', 380, EASE_IN_OUT),
+          ]);
+          // Flick: the card flies off, the finger lifts, the stack moves up a place.
+          card.animate([{ transform: 'translateX(-38px) rotate(-3deg)' }, { transform: 'translateX(-135%) rotate(-14deg)' }], { duration: 420, easing: EASE_OUT, fill: 'forwards' });
+          touch.animate([{ transform: 'translateX(-38px)', opacity: 1 }, { transform: 'translateX(-90px)', opacity: 0 }], { duration: 260, easing: EASE_OUT, fill: 'forwards' });
+          order = [...order.slice(1), card];
+          layout();
+          await wait(460);
+          // The swiped card rejoins at the back, hidden, ready to fade in as the stack cycles.
+          card.style.transition = 'none';
+          card.getAnimations().forEach((a) => a.cancel());
+          void card.offsetHeight;
+          card.style.transition = '';
+          touch.getAnimations().forEach((a) => a.cancel());
+        }
+      })();
+    }
+  }
+
   /* ---------- Picked by Lucie: tap a chip, skeleton, swap products ---------- */
 
   const SETS = {

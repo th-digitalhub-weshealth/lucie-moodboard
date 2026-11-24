@@ -220,18 +220,64 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 /* ---------- Row 4 · Lucie prompts ----------
    Ported from the storefront (AtomiaFrontEnd css/styles.css: .lucie-tile, .lucie-pill). Keep in step with it. */
 
-.row-prompts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.row-prompts { height: 600px; }
+.prompt-stack-tile { display: grid; place-items: center; }
+
+/* Card stack: the front card sits on top; the next two peek out below, smaller. The script swipes
+   the front card away (a fake touch drags it, then it flicks off) and it rejoins at the back. */
+.prompt-stack { position: relative; width: 300px; aspect-ratio: 29 / 40; margin-bottom: 28px; }
 .lucie-tile {
-  aspect-ratio: 29 / 40;
+  position: absolute;
+  inset: 0;
+  overflow: clip;
   border-radius: var(--radius-m);
   background: #f7f3f5;
+  box-shadow: 0 22px 44px -18px #610f3b40, 0 4px 12px #610f3b14;
+  transform-origin: 50% 100%;
+  transition: transform 450ms var(--ease-out), opacity 300ms var(--ease-out);
 }
+.lucie-tile[data-depth="0"] { z-index: 4; }
+.lucie-tile[data-depth="1"] { z-index: 3; transform: translateY(14px) scale(0.94); }
+.lucie-tile[data-depth="2"] { z-index: 2; transform: translateY(28px) scale(0.88); }
+.lucie-tile[data-depth="3"] { z-index: 1; transform: translateY(28px) scale(0.88); opacity: 0; }
+/* Behind cards are dimmed slightly so the front card reads first. */
+.lucie-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #fffefe;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms var(--ease-out);
+}
+.lucie-tile[data-depth="1"]::after { opacity: 0.25; }
+.lucie-tile[data-depth="2"]::after,
+.lucie-tile[data-depth="3"]::after { opacity: 0.45; }
 .lucie-tile img { display: block; width: 100%; height: 100%; object-fit: cover; }
 /* Crops match the Paper mock. */
-.lucie-tile:nth-child(2) img { object-position: 40% 20%; }
-.lucie-tile:nth-child(3) img { object-position: 45% 30%; }
-.lucie-tile:nth-child(4) img { object-position: 72% 35%; }
-.lucie-tile:nth-child(5) img { object-position: 35% 50%; }
+.lucie-tile:nth-child(1) img { object-position: 40% 20%; }
+.lucie-tile:nth-child(2) img { object-position: 45% 30%; }
+.lucie-tile:nth-child(3) img { object-position: 72% 35%; }
+.lucie-tile:nth-child(4) img { object-position: 35% 50%; }
+
+/* The "user's" finger: a soft touch dot. */
+.stack-touch {
+  position: absolute;
+  left: 62%;
+  top: 46%;
+  z-index: 5;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-radius: 999px;
+  background: #fffefe8c;
+  border: 1.5px solid #fffefee6;
+  box-shadow: 0 6px 18px #610f3b33;
+  opacity: 0;
+  scale: 0.8;
+  pointer-events: none;
+}
+
 /* Light leak in the Lucie gradient, radiating from the star. Multiply tints the pale photos;
    the dark photo uses screen to glow instead. */
 .lucie-tile-glow {
@@ -301,13 +347,13 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   0% { background-position: 100% 0; }
   37%, 100% { background-position: 0% 0; }
 }
-/* Offset each tile so the strokes and glints don't move in lockstep (child 1 is the star sprite). */
-.lucie-tile:nth-child(3) .lucie-pill { animation-delay: -1.5s; }
-.lucie-tile:nth-child(4) .lucie-pill { animation-delay: -3s; }
-.lucie-tile:nth-child(5) .lucie-pill { animation-delay: -4.5s; }
-.lucie-tile:nth-child(3) .lucie-pill-label { animation-delay: 2.2s; }
-.lucie-tile:nth-child(4) .lucie-pill-label { animation-delay: 3.4s; }
-.lucie-tile:nth-child(5) .lucie-pill-label { animation-delay: 4.6s; }
+/* Offset each card so the strokes and glints don't move in lockstep. */
+.lucie-tile:nth-child(2) .lucie-pill { animation-delay: -1.5s; }
+.lucie-tile:nth-child(3) .lucie-pill { animation-delay: -3s; }
+.lucie-tile:nth-child(4) .lucie-pill { animation-delay: -4.5s; }
+.lucie-tile:nth-child(2) .lucie-pill-label { animation-delay: 2.2s; }
+.lucie-tile:nth-child(3) .lucie-pill-label { animation-delay: 3.4s; }
+.lucie-tile:nth-child(4) .lucie-pill-label { animation-delay: 4.6s; }
 /* Paused while scrolled away (JS adds .is-live when on screen). */
 .js .row-prompts:not(.is-live) .lucie-pill,
 .js .row-prompts:not(.is-live) .lucie-pill-label { animation-play-state: paused; }
@@ -911,9 +957,9 @@ button.chip:active { transform: scale(0.97); }
   .logo-tile { height: 420px; }
   .logo { width: 220px; }
   .ask-tile { height: 300px; flex: none; }
-  .row-prompts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .lucie-prompt { left: 12px; bottom: 12px; max-width: calc(100% - 24px); padding: 8px 11.5px; font-size: 13px; line-height: 18px; }
-  .lucie-tile-star { top: 9px; right: 11px; width: 24px; height: 24px; }
+  .row-prompts { height: auto; }
+  .prompt-stack-tile { height: 520px; }
+  .prompt-stack { width: 250px; }
   .verbs-tile { height: 120px; flex: none; }
   .routine-photo, .shade-photo, .sparkle-photo { height: 520px; }
   .sparkle-photo { background-size: cover; background-position: 70% 30%; }

@@ -845,7 +845,18 @@ button.chip:active { transform: scale(0.97); }
   background-size: 140%;
   background-position: 100% 30%;
 }
-.sparkle { width: 112px; height: 112px; rotate: 45deg; }
+.sparkle { position: relative; z-index: 1; width: 112px; height: 112px; rotate: 45deg; }
+
+/* Storefront homepage treatment (AtomiaFrontEnd lucie-stardust.js): the Lucie glow plus rising
+   stardust. Each star is a small box; the SVGs have their glow or blur baked in, so only transform
+   and opacity ever animate. */
+.lucie-stars { position: absolute; inset: 0; pointer-events: none; }
+.lucie-star { position: absolute; aspect-ratio: 1; }
+.lucie-star-sway, .lucie-star-twinkle, .lucie-star-img { position: absolute; inset: 0; }
+.lucie-star-img { background: center / 100% 100% no-repeat; }
+.lucie-star-img.is-sharp { background-image: url("assets/star-sharp.svg"); }
+.lucie-star-img.is-defocus { background-image: url("assets/star-defocus.svg"); opacity: 0; }
+.lucie-star-img.is-bokeh { background-image: url("assets/star-bokeh.svg"); }
 
 .shade-photo {
   display: flex;

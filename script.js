@@ -181,6 +181,157 @@
     }
   }
 
+  /* ---------- Stardust: the storefront's rising Lucie stars (AtomiaFrontEnd lucie-stardust.js) ----------
+     Tiny four-point stars rise from the bottom edge (larger and brighter low down), with a few large
+     out-of-focus stars in front. Stars rise, sway, twinkle, and about half drift in and out of focus
+     (a sharp and a pre-blurred copy crossfade). Ported with one change: the layout is in the tile's own
+     pixels rather than a 290-wide grid, so stars keep the storefront's size on wide tiles. */
+
+  function seeded(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6d2b79f5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const SINE = 'cubic-bezier(0.37, 0, 0.63, 1)';
+
+  function drawStardust(tile, seed, opts) {
+    const rand = seeded(seed);
+    const between = (min, max) => min + rand() * (max - min);
+    const W = tile.offsetWidth;
+    const H = tile.offsetHeight;
+    const node = (className, parent) => {
+      const n = document.createElement('i');
+      n.className = className;
+      parent?.append(n);
+      return n;
+    };
+    const place = (n, x, y, scale) => {
+      const size = 12 * scale;
+      Object.assign(n.style, {
+        left: `${((x / W) * 100).toFixed(2)}%`, top: `${((y / H) * 100).toFixed(2)}%`,
+        width: `${size.toFixed(1)}px`, margin: `${(-size / 2).toFixed(1)}px 0 0 ${(-size / 2).toFixed(1)}px`,
+      });
+    };
+
+    const field = node('lucie-stars');
+    field.setAttribute('aria-hidden', 'true');
+    const stars = [];
+    const bands = Math.round(W / 24);
+    const placed = [];
+    for (let band = 0; band < bands; band++) {
+      for (let n = 0, tries = 0; n < opts.perBand && tries < 400; tries++) {
+        const x = between(12 + (band * (W - 24)) / bands, 12 + ((band + 1) * (W - 24)) / bands);
+        const t = rand() ** 1.4; // 0 = bottom edge, 1 = top of the rise
+        const y = H - opts.bottom - t * opts.rise;
+        if (placed.some(([a, b]) => (x - a) ** 2 + (y - b) ** 2 < 19 ** 2)) continue;
+        placed.push([x, y]);
+        const scale = Math.max(0.85, (1 - t) * 2.5 + between(-0.25, 0.3));
+        const opacity = Math.max(0.28, (1 - t) * 0.95 + between(-0.05, 0.05));
+        const dot = node('lucie-star', field);
+        place(dot, x, y, scale);
+        const sway = node('lucie-star-sway', dot);
+        const twinkle = node('lucie-star-twinkle', sway);
+        twinkle.style.opacity = opacity.toFixed(2);
+        const sharp = node('lucie-star-img is-sharp', twinkle);
+        const soft = rand() < 0.5 ? node('lucie-star-img is-defocus', twinkle) : null;
+        stars.push({ kind: 'sharp', dot, sway, twinkle, sharp, soft, opacity });
+        n++;
+      }
+    }
+    const near = [];
+    for (let tries = 0; near.length < opts.bokeh && tries < 2000; tries++) {
+      const x = between(14, W - 14);
+      const y = between(H - opts.bokehFrom, H - opts.bokehTo);
+      if (near.some(([a, b]) => (x - a) ** 2 + (y - b) ** 2 < 55 ** 2)) continue;
+      near.push([x, y]);
+      const s = between(3.6, 8.5);
+      const dot = node('lucie-star is-near', field);
+      place(dot, x, y, s);
+      const sway = node('lucie-star-sway', dot);
+      const img = node('lucie-star-img is-bokeh', sway);
+      const opacity = 0.3 + 0.06 * s;
+      img.style.opacity = opacity.toFixed(2);
+      stars.push({ kind: 'bokeh', dot, sway, img, opacity });
+    }
+    opts.insert(field);
+    return { stars, rand };
+  }
+
+  function animateStardust({ stars, rand }) {
+    const anims = [];
+    const between = (min, max) => min + rand() * (max - min);
+    const loop = (n, keyframes, duration) => {
+      const a = n.animate(keyframes, { duration, iterations: Infinity, direction: 'alternate', easing: SINE });
+      a.currentTime = rand() * duration * 2;
+      a.pause();
+      return a;
+    };
+    for (const star of stars) {
+      const near = star.kind === 'bokeh';
+      // Rise: a constant float up, fading in over the first 15% and out over the last 30%.
+      const climb = between(near ? 80 : 45, near ? 120 : 80);
+      const rise = between(near ? 7000 : 8000, near ? 10000 : 13000);
+      const lift = star.dot.animate([
+        { transform: 'translateY(0)', opacity: 0 },
+        { transform: `translateY(${(-climb * 0.15).toFixed(1)}px)`, opacity: 1, offset: 0.15 },
+        { transform: `translateY(${(-climb * 0.7).toFixed(1)}px)`, opacity: 1, offset: 0.7 },
+        { transform: `translateY(${(-climb).toFixed(1)}px)`, opacity: 0 },
+      ], { duration: rise, iterations: Infinity, easing: 'linear' });
+      lift.currentTime = rand() * rise;
+      lift.pause();
+      anims.push(lift);
+      // Sway: a few px sideways and a little bob. Near stars move more.
+      const dx = between(-1, 1) * (near ? 9 : 6);
+      const dy = between(-1, 1) * (near ? 5 : 3);
+      anims.push(loop(star.sway, [{ transform: 'translate(0, 0)' }, { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)` }], between(near ? 3500 : 2500, near ? 6000 : 4500)));
+      if (near) {
+        anims.push(loop(star.img, [{ opacity: star.opacity }, { opacity: star.opacity * 0.4 }], between(2500, 5000)));
+        continue;
+      }
+      anims.push(loop(star.twinkle, [
+        { opacity: star.opacity, transform: 'scale(1)' },
+        { opacity: star.opacity * 0.2, transform: 'scale(0.6)' },
+      ], between(1200, 3200)));
+      if (star.soft) {
+        // Focus pull: hold sharp, crossfade to the blurred copy, hold, and back.
+        const duration = between(3000, 6000);
+        const start = rand() * duration * 2;
+        for (const [n, frames] of [[star.sharp, [1, 1, 0, 0]], [star.soft, [0, 0, 1, 1]]]) {
+          const a = n.animate(frames.map((opacity, i) => ({ opacity, offset: [0, 0.3, 0.7, 1][i] })),
+            { duration, iterations: Infinity, direction: 'alternate', easing: SINE });
+          a.currentTime = start;
+          a.pause();
+          anims.push(a);
+        }
+      }
+    }
+    return anims;
+  }
+
+  const DUST_OPTS = { perBand: 2, rise: 210, bottom: 12, bokeh: 8, bokehFrom: 240, bokehTo: 40 };
+  const dustTiles = [...document.querySelectorAll('[data-stardust]')];
+  if (dustTiles.length) {
+    const draw = () => {
+      const running = new Map();
+      dustTiles.forEach((tile, i) => {
+        const drawn = drawStardust(tile, 4243 + i * 7919, { ...DUST_OPTS, insert: (field) => tile.querySelector('.lucie-tile-glow').after(field) });
+        if (!reduceMotion) running.set(tile, animateStardust(drawn));
+      });
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          for (const a of running.get(entry.target) ?? []) entry.isIntersecting ? a.play() : a.pause();
+        }
+      });
+      running.forEach((_, tile) => io.observe(tile));
+    };
+    (document.fonts?.ready ?? Promise.resolve()).then(draw);
+  }
+
   /* ---------- Picked by Lucie: tap a chip, skeleton, swap products ---------- */
 
   const SETS = {

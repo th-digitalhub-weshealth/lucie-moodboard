@@ -905,6 +905,16 @@ button.chip:active { transform: scale(0.97); }
 .opt.is-selected small { color: var(--plum); }
 
 .bag-photo { border-radius: var(--radius-m); background-image: url("assets/photo-bag.webp"); background-position: 50%; }
+/* Four-corner Lucie wash, like the logo tile: lilac, blush, aqua, lilac, fading to white in the middle.
+   Multiply tints the white studio background and barely touches the bag. */
+.bag-photo .lucie-tile-glow {
+  background:
+    radial-gradient(60% 60% at 0% 0%, #e1c6ffd9 0%, #e1c6ff00 75%),
+    radial-gradient(60% 60% at 100% 0%, #f9e0dce6 0%, #f9e0dc00 75%),
+    radial-gradient(55% 60% at 0% 100%, #c4ebf0e6 0%, #c4ebf000 75%),
+    radial-gradient(60% 65% at 100% 100%, #e1c6ffd9 0%, #e1c6ff00 75%);
+  mix-blend-mode: multiply;
+}
 
 /* ---------- Row 5 · Composer ---------- */
 

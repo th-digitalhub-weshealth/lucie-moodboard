@@ -64,24 +64,55 @@
   const thread = document.querySelector('[data-thread]');
   if (thread) {
     const step = (name) => thread.querySelector(`[data-step="${name}"]`);
-    const answers = thread.querySelectorAll('.answer');
     thread.querySelectorAll('.reply').forEach((reply) => {
       reply.innerHTML = reply.textContent.trim().split(' ')
         .map((w, i) => `<span class="word" style="--i:${i}">${w}</span>`).join(' ');
     });
 
-    const show = (name, on = true) => step(name).classList.toggle('on', on);
+    // Blocks take no space until they're shown, so the tile fits what's there. Thinking/reply
+    // share one line, so they only fade.
+    const blocks = [...thread.querySelectorAll('[data-step]')]
+      .filter((el) => !/^(thinking|reply)/.test(el.dataset.step));
+    const hideAll = () => {
+      thread.querySelectorAll('[data-step]').forEach((el) => el.classList.remove('on'));
+      blocks.forEach((el) => { el.hidden = true; });
+    };
+
+    // Animate the tile from its current height to the height after `change`.
+    let settle;
+    function grow(change) {
+      const from = thread.offsetHeight;
+      thread.style.transition = 'none';
+      thread.style.height = '';
+      change();
+      const to = thread.offsetHeight;
+      if (reduceMotion || Math.abs(to - from) < 1) { thread.style.transition = ''; return; }
+      thread.style.height = `${from}px`;
+      void thread.offsetHeight;
+      // Inline, because the scroll-reveal class owns this tile's `transition` property.
+      thread.style.transition = 'height 450ms var(--ease-out)';
+      thread.style.height = `${to}px`;
+      clearTimeout(settle);
+      settle = setTimeout(() => { thread.style.height = ''; thread.style.transition = ''; }, 500);
+    }
+
+    const show = (name, on = true) => {
+      const el = step(name);
+      if (on && el.hidden) grow(() => { el.hidden = false; });
+      el.classList.toggle('on', on);
+    };
     const whenVisible = watchVisibility(thread);
 
     // One exchange: question, Lucie thinks, answers word by word, then her content builds in.
-    async function exchange(n, answer, content) {
+    async function exchange(n, content) {
       show(`user${n}`);
       await wait(800);
-      answer.classList.add('is-thinking');
+      show(`answer${n}`);
+      step(`answer${n}`).classList.add('is-thinking');
       show(`thinking${n}`);
       await wait(1800);
       show(`thinking${n}`, false);
-      answer.classList.remove('is-thinking');
+      step(`answer${n}`).classList.remove('is-thinking');
       show(`reply${n}`);
       for (const [name, pause] of content) {
         await wait(pause);
@@ -89,20 +120,21 @@
       }
     }
 
+    hideAll();
     (async function loop() {
       for (;;) {
         await whenVisible();
         thread.classList.remove('is-out');
         await wait(500);
-        await exchange('', answers[0], [['card', 650], ['feedback', 550]]);
+        await exchange('', [['card', 650], ['feedback', 550]]);
         await wait(1800);
         await whenVisible();
-        await exchange('2', answers[1], [['routine', 650], ['cta', 700], ['feedback2', 450]]);
+        await exchange('2', [['routine', 650], ['feedback2', 900]]);
         await wait(5200);
         thread.classList.add('is-out');
-        await wait(500);
-        ['user', 'reply', 'card', 'feedback', 'user2', 'reply2', 'routine', 'cta', 'feedback2'].forEach((n) => show(n, false));
-        await wait(700);
+        await wait(450);
+        grow(hideAll);
+        await wait(900);
       }
     })();
   }

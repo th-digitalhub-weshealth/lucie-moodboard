@@ -560,6 +560,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 
 .thread {
   flex: 1 1 0;
+  min-height: 120px;
   padding: 36px;
   /* Full-width tile, but the conversation keeps its old column width (784px) and sits centred. */
   padding-inline: max(36px, calc((100% - 784px) / 2));
@@ -567,7 +568,10 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   flex-direction: column;
   gap: 28px;
   border-radius: var(--radius-m);
+  /* script.js animates its height as messages arrive or leave, so the tile grows and shrinks. */
 }
+/* Not-yet-shown messages take no space. */
+.thread [hidden] { display: none !important; }
 
 [data-step] {
   opacity: 0;
@@ -636,8 +640,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 
 /* Follow-up: Lucie builds a morning routine (Paper "Conversation" 1OM-0, one selected product per step). */
 .answer-routine { width: 100%; }
-.routine { display: flex; flex-direction: column; gap: 22px; transform: translateY(10px); }
-.routine-wave { display: block; width: 100%; height: 8px; overflow: hidden; }
+.routine { transform: translateY(10px); }
 .routine-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .routine-step {
   display: flex; flex-direction: column; gap: 10px; min-width: 0;
@@ -646,11 +649,9 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   transition-delay: calc(var(--i) * 70ms);
 }
 .routine.on .routine-step { opacity: 1; transform: none; }
-.routine-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 4px; }
-.routine-head > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.routine-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 4px; }
 .routine-title { font-size: 20px; font-weight: 500; letter-spacing: -0.015em; line-height: 24px; color: var(--ink); }
-.routine-sub { font-size: 14px; line-height: 18px; color: var(--muted-strong); min-height: 36px; }
-.routine-refresh { flex: none; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 999px; background: var(--lilac-soft); }
+.routine-sub { font-size: 14px; line-height: 18px; color: var(--muted-strong); }
 .routine-img {
   position: relative;
   height: 150px;
@@ -661,23 +662,14 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   overflow: clip;
 }
 .routine-img img { width: 118px; height: 118px; object-fit: contain; mix-blend-mode: multiply; }
-.routine-check { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 999px; background: var(--plum); }
+/* Shuffle: swap this step's product. */
+.routine-shuffle { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 999px; background: #fffefe; box-shadow: 0 2px 8px #610f3b14; }
 .routine-name {
   font-size: 14px; line-height: 18px; color: var(--ink);
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; min-height: 36px;
 }
 .routine-price { margin-top: -7px; font-size: 15px; font-weight: 500; line-height: 20px; color: var(--ink); }
-.routine-cta {
-  height: 52px;
-  margin-top: 10px;
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  border-radius: 999px;
-  background: var(--plum);
-  color: #fffefe;
-  font-size: 16px; font-weight: 500; line-height: 20px;
-  transform: translateY(8px);
-}
-.routine-total { color: #fffefeb3; font-weight: 400; }
+
 .feedback > span { width: 32px; height: 32px; display: grid; place-items: center; }
 .feedback .flip svg { rotate: 180deg; }
 
@@ -926,9 +918,10 @@ button.chip:active { transform: scale(0.97); }
   .verbs-tile { height: 120px; flex: none; }
   .routine-photo, .shade-photo, .sparkle-photo { height: 520px; }
   .sparkle-photo { background-size: cover; background-position: 70% 30%; }
-  .thread { height: auto; min-height: 336px; padding: 24px; }
+  .thread { height: auto; min-height: 96px; padding: 24px; }
   .answer { width: 100%; }
   .routine-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
+  .routine-sub { min-height: 36px; }
   .row-chat .thread { flex: none; }
   .picks { flex: none; padding: 24px; }
   .chips { overflow: hidden; }
@@ -951,6 +944,6 @@ button.chip:active { transform: scale(0.97); }
   .verb, .verb.is-leaving,
   .skeleton .product-img::after, .skeleton .bar::after { animation: none !important; }
   .lucie-pill-label { background-position: 0% 0; }
-  .routine-step, .routine, .routine-cta,
+  .routine-step, .routine,
   [data-step], .bubble, .compat, .reply .word, .product, .verb { transform: none !important; filter: none !important; }
 }

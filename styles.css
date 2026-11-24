@@ -595,7 +595,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 /* Selected-chip skin: pale Lucie gradient fill, lilac → blush → aqua hairline stroke, plum label. */
 .pill {
   display: flex; align-items: center; gap: 8px;
-  padding: 12px 20px 12px 16px;
+  padding: 12px 20px;
   border: 1px solid transparent;
   border-radius: 999px;
   background:
@@ -604,8 +604,6 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   color: var(--plum-deep);
   font-size: 18px; font-weight: 500; line-height: 20px;
 }
-.pill .star { width: 14px; height: 14px; rotate: 45deg; }
-.pill .spin { animation: star-turn 6s 3.2s infinite, star-pop 6s 3.2s infinite; }
 
 /* ---------- Row 2 · Thread ---------- */
 

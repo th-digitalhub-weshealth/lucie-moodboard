@@ -164,15 +164,24 @@
             move(card, 'translateX(-38px) rotate(-3deg)', 380, EASE_IN_OUT),
             move(touch, 'translateX(-38px)', 380, EASE_IN_OUT),
           ]);
-          // Flick: the card flies off, the finger lifts, the stack moves up a place.
-          card.animate([{ transform: 'translateX(-38px) rotate(-3deg)' }, { transform: 'translateX(-135%) rotate(-14deg)' }], { duration: 420, easing: EASE_OUT, fill: 'forwards' });
-          touch.animate([{ transform: 'translateX(-38px)', opacity: 1 }, { transform: 'translateX(-90px)', opacity: 0 }], { duration: 260, easing: EASE_OUT, fill: 'forwards' });
+          // Release: the card glides off the top of the stack and fades, staying above the others
+          // the whole way. A soft in-out curve picks up from the drag's stop without a jolt.
+          card.dataset.depth = 'out';
+          touch.animate([{ transform: 'translateX(-38px)', opacity: 1 }, { transform: 'translateX(-60px)', opacity: 0 }], { duration: 300, easing: EASE_OUT, fill: 'forwards' });
+          const exit = card.animate([
+            { transform: 'translateX(-38px) rotate(-3deg)', opacity: 1 },
+            { transform: 'translateX(-70px) translateY(-6px) rotate(-5deg)', opacity: 1, offset: 0.3 },
+            { transform: 'translateX(-150px) translateY(-14px) rotate(-9deg)', opacity: 0 },
+          ], { duration: 720, easing: 'cubic-bezier(0.65, 0, 0.35, 1)', fill: 'forwards' });
+          // The next card moves up as the top one leaves.
+          await wait(140);
           order = [...order.slice(1), card];
-          layout();
-          await wait(460);
-          // The swiped card rejoins at the back, hidden, ready to fade in as the stack cycles.
+          order.slice(0, -1).forEach((c, i) => { c.dataset.depth = Math.min(i, 3); });
+          await exit.finished;
+          // Rejoin at the back, hidden, ready to fade in as the stack cycles.
           card.style.transition = 'none';
-          card.getAnimations().forEach((a) => a.cancel());
+          card.dataset.depth = 3;
+          card.getAnimations().forEach((a) => a.cancel()); // the drag and the exit
           void card.offsetHeight;
           card.style.transition = '';
           touch.getAnimations().forEach((a) => a.cancel());

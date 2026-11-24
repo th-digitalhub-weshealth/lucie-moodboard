@@ -968,9 +968,9 @@ button.chip:active { transform: scale(0.97); }
 @keyframes glow-b { to { transform: translate3d(-60%, 30%, 0) scale(0.9); } }
 @keyframes glow-c { to { transform: translate3d(70%, -18%, 0) scale(1.2); } }
 
-.composer-inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.composer-inner { position: relative; width: min(420px, 100%); display: flex; flex-direction: column; align-items: center; gap: 18px; }
 .composer-field {
-  width: min(540px, 100%);
+  width: 100%;
   display: flex; align-items: center; gap: 6px;
   padding: 8px 8px 8px 24px;
   border: 1px solid #ead7ff;
@@ -980,7 +980,13 @@ button.chip:active { transform: scale(0.97); }
 }
 .composer-placeholder { flex: 1; font-size: 21px; line-height: 26px; letter-spacing: -0.3px; }
 .composer-btn { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 999px; }
-.composer-btn.send { background: #edddff; }
+/* Send: the selected-chip skin (pale Lucie gradient fill, lilac → blush → aqua hairline stroke). */
+.composer-btn.send {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(in oklab 100deg, #f1e4fd, #fbeff4 60%, #e8f5f7) padding-box,
+    linear-gradient(in oklab 100deg, #d9b6f5, #f2b8da 50%, #a9dce4) border-box;
+}
 .composer-btn.mic svg { width: 15.5px; height: 21.5px; }
 .composer-btn.send svg { width: 15.5px; height: 15.5px; }
 .composer-note { font-size: 15px; line-height: 16px; color: var(--plum); text-align: center; }

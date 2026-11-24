@@ -293,7 +293,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 .ask-cursor   { animation: ask-cursor var(--ask-cycle) infinite both, ask-cursor-fade var(--ask-cycle) infinite both; }
 .ask-btn      { animation: border-turn 6s linear infinite, ask-pill var(--ask-cycle) infinite both, ask-boost var(--ask-cycle) infinite both; }
 .ask-btn::after { animation: ask-shadow var(--ask-cycle) infinite both; }
-.ask-orb .star { animation: ask-star var(--ask-cycle) infinite both; }
+.ask-orb .star { animation: ask-star calc(var(--ask-cycle) * 2) infinite both; }
 .ask-label    { animation: ask-shimmer var(--ask-cycle) infinite both; }
 
 @keyframes ask-cursor {
@@ -329,11 +329,16 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   0%, 14.2% { --border-boost: 0deg; animation-timing-function: var(--ease-out); }
   54.2%, 100% { --border-boost: 720deg; }
 }
-/* Full turn (45° → 405°): the loop's first and last frames are the same transform, so no jump. */
+/* Half turn per hover. The star runs on a 10s cycle (two demo loops, 1% = 100ms):
+   45° → 225° in the first loop, 225° → 405° in the second. 405° is the same transform as 45°,
+   so the cycle's first and last frames match exactly (no jump on repeat). */
 @keyframes ask-star {
-  0%, 14.2% { rotate: 45deg; scale: 1; animation-timing-function: var(--ease-out); }
-  18.2% { scale: 1.22; animation-timing-function: var(--ease-in-out); }
-  30.2%, 100% { rotate: 405deg; scale: 1; }
+  0%, 7.1% { rotate: 45deg; scale: 1; animation-timing-function: var(--ease-out); }
+  9.1% { scale: 1.22; animation-timing-function: var(--ease-in-out); }
+  15.1% { rotate: 225deg; scale: 1; }
+  57.1% { rotate: 225deg; scale: 1; animation-timing-function: var(--ease-out); }
+  59.1% { scale: 1.22; animation-timing-function: var(--ease-in-out); }
+  65.1%, 100% { rotate: 405deg; scale: 1; }
 }
 /* 90% → 10% puts the band at the text's edge on the first and last frames, so it shows at once. */
 @keyframes ask-shimmer {
@@ -358,7 +363,7 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 @keyframes ask-star-once {
   0% { rotate: 45deg; scale: 1; animation-timing-function: var(--ease-out); }
   25% { scale: 1.22; animation-timing-function: var(--ease-in-out); }
-  100% { rotate: 405deg; scale: 1; }
+  100% { rotate: 225deg; scale: 1; }
 }
 @keyframes ask-shimmer-once {
   from { background-position: 90% 0; }

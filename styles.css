@@ -102,83 +102,181 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 .page.is-swapping > .row, .page.is-swapping [data-view-label] { opacity: 0; }
 
 .row-applied { height: auto; }
-/* The three screens sit straight on the page, no bento, square-cornered, as large as the row allows. */
-.applied-tile {
-  flex: 1 1 0;
-  min-width: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--gap);
-}
-.applied-screen {
-  position: relative;
-  /* Fade in one after another, left to right, each time the view appears. */
+/* ---------- Applied on mobile: one live phone ----------
+   A 402 × 874 screen (Paper's frame size) scaled to fit by script.js (--s). The covers are the Paper
+   artwork; the chat is HTML built from Paper's own styles (p-1-0: 1JI, 1LV, 1TQ, 60V). */
+
+.row-applied { height: auto; justify-content: center; }
+.mob {
+  --s: 1;
+  width: calc(402px * var(--s));
+  height: calc(874px * var(--s));
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-out), translate 800ms cubic-bezier(0.65, 0, 0.35, 1);
-  transition-delay: calc(var(--i) * 220ms), calc(var(--i) * 220ms), 0ms;
+  transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-out);
 }
-.page.is-applied.is-shown .applied-screen { opacity: 1; transform: none; }
-.applied-screen img { display: block; width: 100%; height: auto; }
+.page.is-applied.is-shown .mob { opacity: 1; transform: none; }
+.mob-phone {
+  position: relative;
+  width: 402px; height: 874px;
+  overflow: clip;
+  transform: scale(var(--s));
+  transform-origin: 0 0;
+  background: #fffdfd;
+  font-feature-settings: "ss01";
+  touch-action: pan-y;
+  outline: none;
+}
+.mob-phone:focus-visible { box-shadow: 0 0 0 3px var(--plum); }
 
-/* Prototype: the other two screens fade away and the first glides to the centre (translate set in JS). */
-.applied-tile.is-playing .applied-screen:not([data-proto-phone]) {
+/* Covers: swipe through; the first opens the chat. */
+.mob-cover { position: absolute; inset: 0; cursor: grab; transition: opacity 350ms var(--ease-out), scale 450ms var(--ease-out); }
+.mob-cover:active { cursor: grabbing; }
+.mob-track { display: flex; height: 100%; will-change: transform; }
+.mob-track img { flex: none; width: 402px; height: 874px; display: block; user-select: none; -webkit-user-drag: none; }
+.mob-phone.is-chat .mob-cover { opacity: 0; scale: 1.02; pointer-events: none; }
+
+/* Chat sheet (Paper 1JI): status bar, round nav buttons, scrolling conversation, composer. */
+.mob-chat {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  padding-top: 74px;
+  background:
+    radial-gradient(190px 120px at 70px 840px, #e1c6ff59, #e1c6ff00 100%),
+    radial-gradient(150px 110px at 350px 850px, #fcece9cc, #fcece900 100%),
+    radial-gradient(130px 80px at 110px 780px, #7dd7e133, #7dd7e100 100%),
+    #fffdfd;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 450ms var(--ease-out);
+  transition: opacity 450ms var(--ease-out) 150ms;
 }
-.applied-tile.is-returning .applied-screen:not([data-proto-phone]) { transition: opacity 600ms var(--ease-out) 450ms; }
-
-/* Frames cross-fade inside the phone. Frame 0 sets the size; the rest sit on top of it. */
-.proto-frame { opacity: 0; transition: opacity 450ms var(--ease-out); }
-.proto-frame:not([data-frame="0"]) { position: absolute; inset: 0; }
-.proto-frame.is-on, .proto-frame[data-frame="0"] { opacity: 1; } /* the cover stays underneath and sets the size */
-
-/* Unselected answer tiles (Paper's unselected option style), laid exactly over the screen's
-   pre-selected tile. Tapping fades this away to reveal the selection, then the next screen comes in.
-   Sized in units of the 402-wide screen so it lines up at any width. */
-[data-proto-phone] { container-type: inline-size; }
-.proto-frame img { display: block; width: 100%; height: auto; }
-.proto-tile {
-  --u: calc(100cqw / 402);
-  position: absolute;
-  display: flex; flex-direction: column; gap: calc(var(--u) * 4);
-  padding: calc(var(--u) * 22) calc(var(--u) * 16) calc(var(--u) * 20);
-  border: 1px solid #ede6ec;
-  border-radius: calc(var(--u) * 16);
-  background: #fffefe;
-  transition: opacity 260ms var(--ease-out);
+.mob-phone.is-chat .mob-chat { opacity: 1; pointer-events: auto; }
+.mob-status {
+  position: absolute; top: 0; left: 0; right: 0; height: 62px; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 46px 0 62px;
+  font: 600 17px/22px system-ui, -apple-system, sans-serif; color: #111827;
+  background: linear-gradient(#fffdfd 70%, #fffdfd00);
 }
-.proto-tile.is-spread { justify-content: space-between; gap: 0; }
-.proto-tile svg { width: calc(var(--u) * 30); height: calc(var(--u) * 30); flex: none; }
-.proto-tile:not(.is-spread) svg { margin-bottom: calc(var(--u) * 18); }
-.proto-tile b { font-size: calc(var(--u) * 16); line-height: calc(var(--u) * 20); font-weight: 500; color: var(--ink); }
-.proto-tile small { font-size: calc(var(--u) * 13); line-height: calc(var(--u) * 16); color: #8a7a86; }
-.proto-frame.is-picked .proto-tile { opacity: 0; }
-
-/* The long routine screen scrolls under a fixed status bar and composer. */
-.proto-long { overflow: clip; }
-.proto-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
-.proto-scroll::-webkit-scrollbar { display: none; }
-.proto-scroll-inner { position: relative; padding-bottom: 38.3%; /* room for the fixed composer */ }
-.proto-fixed { position: absolute; left: 0; width: 100%; pointer-events: none; }
-.proto-fixed.is-top { top: 0; }
-.proto-fixed.is-bottom { bottom: 0; }
-
-/* Hotspots: invisible, only on the current frame; a soft lilac press confirms the tap. */
-.proto-hit {
-  position: absolute;
-  z-index: 1000;
-  padding: 0;
-  border: 0;
-  border-radius: 16px;
-  background: #e1c6ff00;
+.mob-nav { flex: none; height: 60px; display: flex; justify-content: space-between; padding: 0 20px 24px; }
+.mob-round {
+  width: 36px; height: 36px; padding: 0;
+  display: grid; place-items: center;
+  border: 1px solid #ffffffe6; border-radius: 999px;
+  background: #ffffffa6;
+  box-shadow: 0 2px 8px -2px #5e1f421f;
   cursor: pointer;
-  transition: background-color 200ms var(--ease-out), scale 160ms var(--ease-out);
+  transition: scale 160ms var(--ease-out);
 }
-.proto-hit[data-go="1"] { border-radius: 0; }
-.proto-hit[hidden] { display: none; }
-.proto-hit:focus-visible { outline: 2px solid var(--plum); outline-offset: 2px; }
+.mob-round:active { scale: 0.94; }
+.mob-scroll { flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.mob-scroll::-webkit-scrollbar { display: none; }
+.mob-convo { display: flex; flex-direction: column; gap: 24px; padding: 4px 20px 28px; transition: opacity 220ms var(--ease-out), translate 220ms var(--ease-out); }
+.mob-convo.is-leaving { opacity: 0; translate: 0 -8px; }
+
+.mob-composer { flex: none; height: 151px; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 16px 16px; }
+.mob-field {
+  align-self: stretch;
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px 6px 6px 20px;
+  border: 1px solid #ead7ff; border-radius: 999px;
+  background: #fffefe;
+  box-shadow: 0 1px 3px #0000001a, 0 1px 2px -1px #0000001a;
+}
+.mob-field span { flex: 1; font-size: 18px; line-height: 22px; letter-spacing: -0.3px; color: #111827; }
+.mob-field i { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 999px; }
+.mob-send { background: #edddff; }
+.mob-composer p { font-size: 12px; line-height: 16px; color: #813f62; }
+
+/* Messages */
+.mob-echo {
+  align-self: flex-end;
+  max-width: 280px;
+  padding: 12px 18px;
+  border-radius: 20px 20px 6px 20px;
+  background: #edddff;
+  font-size: 16px; line-height: 21px; color: #111827;
+  opacity: 0; transform: translateY(10px) scale(0.96); transform-origin: 100% 100%;
+  transition: opacity 400ms var(--ease-out), transform 500ms var(--ease-out);
+}
+.mob-q { display: flex; align-items: center; gap: 10px; opacity: 0; transition: opacity 350ms var(--ease-out); }
+.mob-star { width: 18px; height: 18px; rotate: 45deg; flex: none; }
+.mob-q.is-thinking .mob-star { animation: think 1.1s linear infinite; }
+.mob-q-text { font-size: 18px; line-height: 24px; color: #111827; }
+.mob-q-text .word { display: inline-block; opacity: 0; transform: translateY(4px); filter: blur(2px); transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out), filter 400ms var(--ease-out); transition-delay: calc(var(--i) * 45ms); }
+.mob-q-text.on .word { opacity: 1; transform: none; filter: none; }
+.mob-echo.on, .mob-q.on { opacity: 1; transform: none; }
+
+/* Answer tiles (Paper's option styles) */
+.mob-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.mob-opts.is-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mob-opt {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  padding: 22px 16px 20px;
+  border: 1px solid #ede6ec; border-radius: 16px;
+  background: #fffefe;
+  font: inherit; text-align: left; color: #111827;
+  cursor: pointer;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 400ms var(--ease-out), transform 500ms var(--ease-out), background-color 200ms var(--ease-out), border-color 200ms var(--ease-out), scale 160ms var(--ease-out);
+  transition-delay: calc(var(--i) * 60ms), calc(var(--i) * 60ms), 0ms, 0ms, 0ms;
+}
+.mob-opts.on .mob-opt { opacity: 1; transform: none; }
+.mob-opt svg { width: 30px; height: 30px; flex: none; margin-bottom: 18px; }
+.mob-opt b { font-size: 16px; line-height: 20px; font-weight: 500; }
+.mob-opt small { font-size: 13px; line-height: 16px; color: #8a7a86; transition: color 200ms var(--ease-out); }
+.mob-opt.is-spread { height: 136px; justify-content: space-between; gap: 0; }
+.mob-opt.is-spread svg { margin-bottom: 0; }
+.mob-opt:active { scale: 0.97; }
+.mob-opt.is-selected { border-color: #dcc4f5; background: linear-gradient(in oklab 160deg, #e1c6ff80 0%, #fffefe 100%) border-box; }
+.mob-opt.is-selected small { color: #813f62; }
+@media (hover: hover) and (pointer: fine) { .mob-opt:not(.is-selected):hover { border-color: #e3d6ee; } }
+
+/* Routine (Paper 60V): four steps, each with four products; skeletons first, then products. */
+.mob-routine { display: flex; flex-direction: column; gap: 28px; }
+.mob-step { display: flex; flex-direction: column; gap: 24px; opacity: 0; transform: translateY(10px); transition: opacity 450ms var(--ease-out), transform 600ms var(--ease-out); transition-delay: calc(var(--i) * 120ms); }
+.mob-routine.on .mob-step { opacity: 1; transform: none; }
+.mob-wave { display: block; width: 362px; height: 8px; }
+.mob-step-head { display: flex; align-items: center; gap: 14px; padding-top: 4px; }
+.mob-step-head > div { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.mob-step-head b { font-size: 20px; line-height: 24px; font-weight: 500; letter-spacing: -0.015em; color: #111827; }
+.mob-step-head small { font-size: 14px; line-height: 18px; color: #6e5a67; }
+.mob-shuffle { width: 38px; height: 38px; flex: none; padding: 0; display: grid; place-items: center; border: 0; border-radius: 999px; background: #f6eeff; cursor: pointer; }
+.mob-shuffle svg { transition: rotate 550ms var(--ease-in-out); }
+.mob-prods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px; row-gap: 16px; transition: opacity 200ms var(--ease-out); }
+.mob-prods.is-shuffling { opacity: 0; }
+.mob-prod { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.mob-prod-img { position: relative; height: 150px; display: grid; place-items: center; overflow: clip; border-radius: 14px; background: #f3f4f6; }
+.mob-prod-img img { width: 118px; height: 118px; object-fit: contain; mix-blend-mode: multiply; transition: opacity 400ms var(--ease-out); }
+.mob-add {
+  position: absolute; right: 8px; bottom: 8px;
+  width: 32px; height: 32px; padding: 0;
+  display: grid; place-items: center;
+  border: 0; border-radius: 999px;
+  background: #e6d3ff; cursor: pointer;
+  transition: background-color 200ms var(--ease-out), scale 160ms var(--ease-out), opacity 400ms var(--ease-out);
+}
+.mob-add:active { scale: 0.9; }
+.mob-add .is-tick { display: none; }
+.mob-add.is-added { background: var(--plum); }
+.mob-add.is-added .is-plus { display: none; }
+.mob-add.is-added .is-tick { display: block; }
+.mob-prod-text { display: flex; flex-direction: column; gap: 3px; }
+.mob-prod-text span { font-size: 14px; line-height: 18px; color: #111827; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; min-height: 36px; }
+.mob-prod-text b { font-size: 15px; line-height: 20px; font-weight: 500; color: #111827; }
+/* Loading: the same layout, as skeleton blocks with a soft sweep. */
+.mob-step .mob-step-head b, .mob-step .mob-step-head small, .mob-prod-text span, .mob-prod-text b { transition: color 350ms var(--ease-out), background-color 350ms var(--ease-out); border-radius: 6px; }
+.mob-step.is-loading .mob-step-head b, .mob-step.is-loading .mob-step-head small,
+.mob-step.is-loading .mob-prod-text span, .mob-step.is-loading .mob-prod-text b { color: transparent; background-color: #f2eef4; width: fit-content; }
+.mob-step.is-loading .mob-prod-img img, .mob-step.is-loading .mob-add { opacity: 0; }
+.mob-step.is-loading .mob-prod-img { background: #f2eef4; }
+.mob-step.is-loading .mob-prod-img::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, #ffffffb3, transparent);
+  transform: translateX(-100%);
+  animation: sweep 1.4s var(--ease-in-out) infinite;
+}
+.mob-step.is-loading .mob-shuffle svg { opacity: 0; }
 
 .row { display: flex; gap: var(--gap); }
 .row-1 { height: 640px; }
@@ -1139,8 +1237,6 @@ button.chip:active { transform: scale(0.97); }
   .routine-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
   .routine-sub { min-height: 36px; }
   .routine-sk { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
-  .applied-tile { grid-template-columns: 1fr; justify-items: center; }
-  .applied-screen { width: min(360px, 100%); }
   .taps { padding: 28px 24px; }
   .taps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tap-opt { height: 116px; }
@@ -1157,7 +1253,8 @@ button.chip:active { transform: scale(0.97); }
 /* ---------- Reduced motion: keep the fades, drop the movement ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .js .reveal, .applied-screen { transform: none; translate: none !important; }
+  .js .reveal, .mob { transform: none; }
+  .mob-step.is-loading .mob-prod-img::after { animation: none; }
   .js .reveal.is-in { transition: opacity 400ms ease var(--reveal-delay, 0ms); }
   .wash > svg, .glow, .ask-btn, .spin, .logo-sheen, .star-glint,
   .ask-cursor, .ask-btn::after, .ask-orb .star, .ask-label,

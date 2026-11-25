@@ -68,90 +68,219 @@
     });
   }
 
-  /* ---------- Applied on mobile: click-through prototype ----------
-     Tap "Build a routine": the other screens fade, it glides to the centre and becomes the chat.
-     Each question arrives with nothing selected; tapping Shiny T-zone → Oiliness → Morning selects it,
-     then moves on to the routine. Back steps back; close restarts. */
+  /* ---------- Applied on mobile: one live phone ----------
+     Swipe (or arrow keys / trackpad) through the three cold-start covers. Tap "Build a routine" to
+     enter the chat: each answer echoes as a bubble, Lucie thinks, asks the next question, and the
+     tiles stagger in. After the last answer the routine builds from skeletons into products.
+     Back steps back; close returns to the covers. Content and styles from Paper p-1-0. */
 
-  const proto = document.querySelector('[data-proto]');
-  if (proto) {
-    const phone = proto.querySelector('[data-proto-phone]');
-    const frames = [...phone.querySelectorAll('[data-frame]')];
-    const hits = [...proto.querySelectorAll('.proto-hit')];
-    const scroller = proto.querySelector('[data-proto-scroll]');
-    const centre = proto.querySelectorAll('.applied-screen')[1];
-    let step = 0;
-    let busy = false;
+  const mob = document.querySelector('[data-mob]');
+  if (mob) {
+    const phone = mob.querySelector('[data-mob-phone]');
+    const cover = mob.querySelector('[data-mob-cover]');
+    const track = mob.querySelector('[data-mob-track]');
+    const scroll = mob.querySelector('[data-mob-scroll]');
+    const convo = mob.querySelector('[data-mob-convo]');
+    const W = 402;
+    const STAR = 'M9.042 0.003C9.211 0.017 9.374 0.072 9.517 0.164L9.653 0.266C9.779 0.379 9.875 0.521 9.934 0.680L9.964 0.773L11.282 5.885L11.325 6.018C11.377 6.146 11.455 6.264 11.554 6.362C11.685 6.494 11.850 6.588 12.030 6.634L17.142 7.952L17.153 7.954C17.345 8.007 17.517 8.114 17.650 8.262L17.753 8.398C17.860 8.565 17.917 8.759 17.917 8.958C17.917 9.186 17.842 9.408 17.704 9.590C17.566 9.771 17.372 9.902 17.153 9.963L12.030 11.283C11.849 11.329 11.685 11.424 11.554 11.555C11.422 11.687 11.328 11.851 11.282 12.031L9.963 17.144C9.899 17.375 9.768 17.568 9.587 17.705C9.405 17.842 9.184 17.917 8.957 17.917C8.729 17.917 8.508 17.842 8.327 17.705C8.146 17.568 8.015 17.375 7.953 17.156L6.632 12.031C6.586 11.851 6.492 11.687 6.361 11.555C6.229 11.424 6.065 11.329 5.885 11.283L0.771 9.964C0.539 9.899 0.347 9.767 0.211 9.587C0.074 9.406 0 9.185 0 8.958C0 8.732 0.074 8.512 0.211 8.331C0.347 8.151 0.539 8.020 0.757 7.957L5.885 6.633C6.065 6.587 6.229 6.493 6.361 6.361C6.492 6.230 6.586 6.066 6.632 5.885L7.954 0.761C8.015 0.542 8.147 0.349 8.328 0.212C8.509 0.075 8.730 0 8.958 0Z';
+    const S = 'fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"';
+    const icon = (inner) => `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">${inner}</svg>`;
+    // Focus-question icons come from the single-tap bento on the board, so the two stay identical.
+    const boardIcon = (label) => [...document.querySelectorAll('.taps-grid .tap-opt')].find((t) => t.textContent.trim() === label)?.querySelector('svg')?.innerHTML ?? '';
+    const SKIN = [
+      { label: 'Tight', sub: 'Dry', phrase: 'dry skin', svg: icon(`<path d="M5.7 10.5H12.5M15.6 10.5H25.3M28.5 10.5H34.3M3.0 20H8.1M11.3 20H24.6M27.8 20H37.0M5.7 29.5H15.1M18.1 29.5H23.8M26.8 29.5H34.3" ${S} />`) },
+      { label: 'Shiny all over', sub: 'Oily', phrase: 'oily skin', svg: () => icon(boardIcon('Oiliness')) },
+      { label: 'Shiny T-zone', sub: 'Combo', phrase: 'a shiny T-zone', svg: icon(`<path d="M3.71 12.93L4.52 12.77L5.34 12.76L6.15 12.89L6.97 13.16L7.78 13.55L8.60 14.04L9.41 14.58L10.23 15.16L11.04 15.72L11.85 16.24L12.67 16.68L13.48 17.00L14.30 17.20L15.11 17.25L15.93 17.16L16.74 16.93L17.56 16.57L18.37 16.10L19.19 15.57L20.00 15.00L20.81 14.43L21.63 13.90L22.44 13.43L23.26 13.07L24.07 12.84L24.89 12.75L25.70 12.80L26.52 13.00L27.33 13.32L28.15 13.76L28.96 14.28L29.77 14.84L30.59 15.42L31.40 15.96L32.22 16.45L33.03 16.84L33.85 17.11L34.66 17.24L35.48 17.23L36.29 17.07" ${S} /><path d="M3.7 25H11.5M14.6 25H26.3M29.5 25H36.3" ${S} />`) },
+      { label: 'Easily irritated', sub: 'Sensitive', phrase: 'sensitive skin', svg: icon([10.5, 20, 29.5].map((y, r) => (r === 1 ? [6, 11.6, 17.2, 22.8, 28.4, 34] : [8.8, 14.4, 20, 25.6, 31.2]).map((x) => `<circle cx="${x}" cy="${y}" r="1.4" fill="#813F62" />`).join('')).join('')) },
+    ];
+    const FOCUS = ['Breakouts', 'Oiliness', 'Texture', 'Blackheads', 'Redness', 'Dry patches'].map((label) => ({ label, svg: () => icon(boardIcon(label)) }));
+    const TIME = [
+      { label: 'Morning', when: 'morning routine', svg: icon('<path d="M3 28H37" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round"/><path d="M14.5 28a5.5 5.5 0 0 1 11 0Z" fill="#813F62"/><path d="M9 28a11 11 0 0 1 22 0" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round"/><path d="M3.5 28a16.5 16.5 0 0 1 33 0" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 3.4"/>') },
+      { label: 'Night', when: 'night routine', svg: icon('<path d="M18.56 9.01A12 12 0 1 0 30.75 23.41A9.5 9.5 0 0 1 18.56 9.01Z" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linejoin="round"/><circle cx="31" cy="8" r="1.4" fill="#813F62"/><circle cx="35.5" cy="14.5" r="1" fill="#813F62"/>') },
+      { label: 'Both', when: 'routine', svg: icon('<path d="M3 20H37" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round"/><path d="M14.5 20a5.5 5.5 0 0 1 11 0Z" fill="#813F62"/><path d="M9 20a11 11 0 0 1 22 0" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round"/><path d="M9 20a11 11 0 0 0 22 0" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 3.4"/>') },
+    ];
+    const ROUTINE = [
+      ['Cleanse', 'Lifts oil, gentle on cheeks', [['r-cleanser', 'BUBBLE Fresh Start Gel Cleanser', '$25.00'], ['p-cleanse-2', 'CeraVe Blemish Control Cleanser', '$20.79'], ['p-cleanse-3', 'Q+A Niacinamide Exfoliating Cleanser', '$9.59'], ['p-cleanse-4', 'medicube Azelaic Acid Foam Cleanser', '$34.00']]],
+      ['Treat', 'Clears pores, calms shine', [['r-serum', 'BUBBLE Super Clear 2% Salicylic Serum', '$29.00'], ['p-treat-2', 'EQQUALBERRY Pore Minimizing Serum', '$38.00'], ['p-treat-3', 'L’Oréal Niacinamide Dark Spot Serum', '$35.99'], ['p-treat-4', 'medicube Azelaic Acid Calming Serum', '$34.00']]],
+      ['Moisturise', 'Light, oil-free hydration', [['r-moisturiser', 'La Roche-Posay Effaclar Mattifying', '$30.39'], ['p-moist-2', 'Boring Without You Face Flood Gel', '$27.99'], ['p-moist-3', 'Conserving Beauty Clearing Gel', '$29.25'], ['p-moist-4', 'BUBBLE Slam Dunk Hydrating Moisturiser', '$28.00']]],
+      ['Protect', 'SPF that won’t add shine', [['r-spf', 'Avène Sunsitive Fluid SPF 50+', '$23.39'], ['p-protect-2', 'La Roche-Posay Anthelios Ultra', '$32.79'], ['p-protect-3', 'Olay Super SPF 50 Fluid Moisturiser', '$34.99'], ['p-protect-4', 'Bioderma Photoderm Dry-Touch SPF 50', '$27.99']]],
+    ];
+    const QUESTIONS = [
+      { q: 'How does your skin feel by lunchtime?', opts: SKIN },
+      { q: 'What would you love to change first?', opts: FOCUS, spread: true },
+      { q: 'When will you use it?', opts: TIME, spread: true, three: true },
+    ];
 
-    // Each new frame fades in on top of the last; the one underneath is cleared once it's covered,
-    // so a cross-fade never shows the cover through two half-faded frames.
-    const cover = frames[0];
-    let layer = 1;
-    let clear;
-    const showFrame = (n) => {
+    /* Fit the 402 × 874 screen to the space (never larger than 1:1). */
+    const fit = () => {
+      const s = Math.min(1, mob.parentElement.clientWidth / W, Math.max(0.62, (innerHeight - 150) / 874));
+      mob.style.setProperty('--s', s.toFixed(4));
+      return s;
+    };
+    let scale = fit();
+    new ResizeObserver(() => { scale = fit(); }).observe(mob.parentElement);
+
+    /* Covers: drag/swipe, trackpad, arrow keys. A tap (no drag) on the first opens the chat. */
+    let slide = 0;
+    const setSlide = (i, animate = true) => {
+      slide = (i + 3) % 3;
+      track.style.transition = animate && !reduceMotion ? 'transform 520ms cubic-bezier(0.32, 0.72, 0, 1)' : 'none';
+      track.style.transform = `translateX(${-slide * W}px)`;
+    };
+    let drag = null;
+    cover.addEventListener('pointerdown', (e) => {
+      drag = { x: e.clientX, t: performance.now(), dx: 0 };
+      track.style.transition = 'none';
+      cover.setPointerCapture(e.pointerId);
+    });
+    cover.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      drag.dx = (e.clientX - drag.x) / scale;
+      track.style.transform = `translateX(${-slide * W + drag.dx}px)`;
+    });
+    const endDrag = () => {
+      if (!drag) return;
+      const { dx, t } = drag;
+      drag = null;
+      const fast = Math.abs(dx) / (performance.now() - t) > 0.45;
+      if (Math.abs(dx) < 6) { setSlide(slide); if (slide === 0) enterChat(); return; }
+      if (dx < -60 || (fast && dx < 0)) setSlide(slide + 1);
+      else if (dx > 60 || (fast && dx > 0)) setSlide(slide - 1);
+      else setSlide(slide);
+    };
+    cover.addEventListener('pointerup', endDrag);
+    cover.addEventListener('pointercancel', endDrag);
+    let wheelLock = 0;
+    cover.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaX) < 25 || Math.abs(e.deltaX) < Math.abs(e.deltaY) || performance.now() < wheelLock) return;
+      e.preventDefault();
+      wheelLock = performance.now() + 650;
+      setSlide(slide + (e.deltaX > 0 ? 1 : -1));
+    }, { passive: false });
+    phone.addEventListener('keydown', (e) => {
+      if (phone.classList.contains('is-chat')) return;
+      if (e.key === 'ArrowRight') setSlide(slide + 1);
+      if (e.key === 'ArrowLeft') setSlide(slide - 1);
+      if ((e.key === 'Enter' || e.key === ' ') && slide === 0) { e.preventDefault(); enterChat(); }
+    });
+
+    /* Chat */
+    const answers = [];
+    let step = -1;
+    let run = 0;
+    let picking = false;
+    const el = (tag, cls, html = '') => { const n = document.createElement(tag); n.className = cls; n.innerHTML = html; return n; };
+    const show = (n) => requestAnimationFrame(() => requestAnimationFrame(() => n.classList.add('on')));
+    const pause = (ms) => wait(reduceMotion ? Math.min(ms, 120) : ms);
+    const words = (text) => text.split(' ').map((w, i) => `<span class="word" style="--i:${i}">${w}</span>`).join(' ');
+
+    async function render(n) {
+      const me = ++run;
+      const alive = () => me === run;
       step = n;
-      phone.dataset.step = n;
-      clearTimeout(clear);
-      if (n === 0) {
-        frames.forEach((f) => { if (f !== cover) f.classList.remove('is-on'); });
-      } else {
-        const f = frames[n];
-        f.classList.remove('is-picked'); // arriving (or coming back) shows every option unselected
-        f.style.zIndex = ++layer;
-        f.classList.add('is-on');
-        clear = setTimeout(() => frames.forEach((g) => { if (g !== cover && g !== f) g.classList.remove('is-on'); }), 480);
+      if (convo.childElementCount) {
+        convo.classList.add('is-leaving');
+        await pause(230);
+        if (!alive()) return;
       }
-      hits.forEach((h) => { h.hidden = +h.dataset.at !== n; });
-      if (n === 4) scroller.scrollTop = 0;
-    };
-    const glide = (toCentre) => {
-      const dx = toCentre ? centre.offsetLeft - phone.offsetLeft : 0;
-      phone.style.translate = dx ? `${dx}px 0` : '';
-    };
+      convo.replaceChildren();
+      convo.classList.remove('is-leaving');
+      scroll.scrollTop = 0;
 
-    async function go(n) {
-      if (busy || n === step) return;
-      busy = true;
-      if (step === 0 && n > 0) {
-        // Start: make room, glide to the centre, then become the chat.
-        proto.classList.remove('is-returning');
-        proto.classList.add('is-playing');
-        await wait(reduceMotion ? 0 : 200);
-        glide(true);
-        await wait(reduceMotion ? 0 : 750);
-        showFrame(n);
-      } else if (n === 0) {
-        // Restart: back to the cover, glide home, bring the others back.
-        showFrame(0);
-        await wait(reduceMotion ? 0 : 450);
-        proto.classList.add('is-returning');
-        proto.classList.remove('is-playing');
-        glide(false);
-        await wait(reduceMotion ? 0 : 800);
+      const echo = el('div', 'mob-echo', n === 0 ? 'Build a routine' : answers[n - 1].label);
+      convo.append(echo); show(echo);
+      await pause(380); if (!alive()) return;
+
+      const q = el('div', 'mob-q is-thinking', `<svg class="mob-star" viewBox="0 0 17.92 17.92" aria-hidden="true"><path d="${STAR}" fill="#ECDDFF"/></svg><span class="mob-q-text"><span class="thinking">Thinking</span></span>`);
+      convo.append(q); show(q);
+      await pause(n === 3 ? 1100 : 800); if (!alive()) return;
+
+      const text = q.querySelector('.mob-q-text');
+      const line = n < 3 ? QUESTIONS[n].q : `Your ${answers[2].when} for ${answers[0].phrase}.`;
+      text.innerHTML = words(line);
+      q.classList.remove('is-thinking');
+      show(text);
+      await pause(260); if (!alive()) return;
+
+      if (n < 3) {
+        const { opts, spread, three } = QUESTIONS[n];
+        const grid = el('div', `mob-opts${three ? ' is-three' : ''}`);
+        opts.forEach((o, i) => {
+          const b = el('button', `mob-opt${spread ? ' is-spread' : ''}`, `${typeof o.svg === 'function' ? o.svg() : o.svg}<b>${o.label}</b>${o.sub ? `<small>${o.sub}</small>` : ''}`);
+          b.type = 'button';
+          b.style.setProperty('--i', i);
+          if (answers[n] === o) b.classList.add('is-selected'); // coming back shows the earlier choice
+          b.addEventListener('click', () => pick(n, o, b));
+          grid.append(b);
+        });
+        convo.append(grid); show(grid);
       } else {
-        showFrame(n);
-        await wait(reduceMotion ? 0 : 450);
+        const routine = el('div', 'mob-routine');
+        ROUTINE.forEach(([title, sub, prods], i) => routine.append(stepEl(title, sub, prods, i)));
+        convo.append(routine); show(routine);
+        await pause(1000); if (!alive()) return;
+        [...routine.children].forEach((s, i) => setTimeout(() => alive() && s.classList.remove('is-loading'), reduceMotion ? 0 : i * 220));
       }
-      busy = false;
     }
 
-    hits.forEach((h) => h.addEventListener('click', async () => {
-      const n = +h.dataset.go;
-      if (n > step && step > 0) { // answer tap: the option selects, then the next screen comes in
-        if (busy) return;
-        frames[step].classList.add('is-picked');
-        busy = true;
-        await wait(reduceMotion ? 150 : 550);
-        busy = false;
-      }
-      go(n);
-    }));
-    addEventListener('resize', () => { if (step > 0) glide(true); });
-    // Leaving the mobile view resets the prototype.
+    function stepEl(title, sub, prods, i) {
+      const s = el('section', 'mob-step is-loading', `
+        <svg class="mob-wave" viewBox="0 0 362 8" aria-hidden="true"><path d="M1 4q5-5 10 0${'t10 0'.repeat(35)}" fill="none" stroke="#DCC4F5" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div class="mob-step-head"><div><b>${title}</b><small>${sub}</small></div>
+          <button type="button" class="mob-shuffle" aria-label="Show other ${title.toLowerCase()} picks"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v4.5h-4.5" fill="none" stroke="#813F62" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+        <div class="mob-prods">${prods.map(([img, name, price]) => `
+          <div class="mob-prod">
+            <div class="mob-prod-img"><img src="assets/${img}.webp" alt="" width="500" height="500" />
+              <button type="button" class="mob-add" aria-label="Add ${name} to bag" aria-pressed="false"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path class="is-plus" d="M7 1.5v11M1.5 7h11" fill="none" stroke="#5E1F42" stroke-width="1.6" stroke-linecap="round"/><path class="is-tick" d="M2.5 7.3l3 3 6-6.3" fill="none" stroke="#FFFEFE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+            <div class="mob-prod-text"><span>${name}</span><b>${price}</b></div>
+          </div>`).join('')}</div>`);
+      s.style.setProperty('--i', i);
+      s.querySelectorAll('.mob-add').forEach((b) => b.addEventListener('click', () => {
+        const on = b.classList.toggle('is-added');
+        b.setAttribute('aria-pressed', on);
+      }));
+      // Shuffle: the icon turns and the four picks rotate, as if Lucie offered the next option first.
+      const shuffle = s.querySelector('.mob-shuffle');
+      const grid = s.querySelector('.mob-prods');
+      let turns = 0;
+      shuffle.addEventListener('click', async () => {
+        shuffle.querySelector('svg').style.rotate = `${++turns * 360}deg`;
+        grid.classList.add('is-shuffling');
+        await pause(200);
+        grid.append(grid.firstElementChild);
+        grid.classList.remove('is-shuffling');
+      });
+      return s;
+    }
+
+    async function pick(n, o, b) {
+      if (picking || step !== n) return;
+      picking = true;
+      b.parentElement.querySelectorAll('.mob-opt').forEach((x) => x.classList.toggle('is-selected', x === b));
+      answers[n] = o;
+      await pause(480);
+      picking = false;
+      render(n + 1);
+    }
+
+    function enterChat() {
+      answers.length = 0;
+      phone.classList.add('is-chat');
+      setTimeout(() => render(0), reduceMotion ? 0 : 350);
+    }
+    function exitChat() {
+      run++;
+      step = -1;
+      phone.classList.remove('is-chat');
+      setTimeout(() => { convo.replaceChildren(); setSlide(0, false); }, 450);
+    }
+    mob.querySelector('[data-mob-back]').addEventListener('click', () => (step <= 0 ? exitChat() : render(step - 1)));
+    mob.querySelector('[data-mob-close]').addEventListener('click', exitChat);
+    // Leaving the mobile view resets the phone to the first cover.
     document.querySelector('[data-view-toggle]')?.addEventListener('click', () => {
-      showFrame(0); glide(false); proto.classList.remove('is-playing', 'is-returning'); busy = false;
+      run++; step = -1; phone.classList.remove('is-chat'); convo.replaceChildren(); setSlide(0, false);
     });
-    showFrame(0);
+    setSlide(0, false);
   }
 
   /* ---------- Thinking verbs ---------- */

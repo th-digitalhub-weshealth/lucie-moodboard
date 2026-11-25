@@ -346,48 +346,32 @@
       </div>
   </template>
   <!-- Applied on mobile (hidden view: click the "Lucie — Creative direction" title to switch) -->
+  <!-- Applied on mobile (hidden view: click the "Lucie — Creative direction" title to switch).
+       One phone: swipe through the three cold-start covers; tap "Build a routine" to enter the chat,
+       which is live HTML (questions, answer tiles, skeletons and the routine). Built from Paper p-1-0. -->
   <section class="row row-applied" aria-label="Lucie applied on mobile">
-    <!-- Click-through prototype: tap "Build a routine" → it moves to the centre and becomes the chat;
-         tap Shiny T-zone → Oiliness → Morning to reach the routine. Back/close step back or restart. -->
-    <div class="applied-tile" data-proto>
-      <div class="applied-screen" data-proto-phone data-step="0" style="--i:0">
-        <img class="proto-frame is-on" data-frame="0" src="assets/mobile-routine.webp" alt="Lucie on mobile: Build a routine cold-start screen" width="402" height="874" />
-        <div class="proto-frame" data-frame="1">
-          <img src="assets/mobile-r1-skin.webp" alt="Lucie asks: How does your skin feel by lunchtime?" width="402" height="874" loading="lazy" />
-          <div class="proto-tile" aria-hidden="true" style="left:4.975%;top:45.881%;width:43.781%;height:15.561%"><svg viewBox="0 0 40 40" focusable="false"><path d="M3.71 12.93L4.52 12.77L5.34 12.76L6.15 12.89L6.97 13.16L7.78 13.55L8.60 14.04L9.41 14.58L10.23 15.16L11.04 15.72L11.85 16.24L12.67 16.68L13.48 17.00L14.30 17.20L15.11 17.25L15.93 17.16L16.74 16.93L17.56 16.57L18.37 16.10L19.19 15.57L20.00 15.00L20.81 14.43L21.63 13.90L22.44 13.43L23.26 13.07L24.07 12.84L24.89 12.75L25.70 12.80L26.52 13.00L27.33 13.32L28.15 13.76L28.96 14.28L29.77 14.84L30.59 15.42L31.40 15.96L32.22 16.45L33.03 16.84L33.85 17.11L34.66 17.24L35.48 17.23L36.29 17.07" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /><path d="M3.7 25H11.5M14.6 25H26.3M29.5 25H36.3" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg><b>Shiny T-zone</b><small>Combo</small></div>
-        </div>
-        <div class="proto-frame" data-frame="2">
-          <img src="assets/mobile-r2-focus.webp" alt="Lucie asks: What would you love to change first?" width="402" height="874" loading="lazy" />
-          <div class="proto-tile is-spread" aria-hidden="true" style="left:51.244%;top:29.176%;width:43.781%;height:15.561%"><svg viewBox="0 0 40 40" focusable="false"><path d="M4.64 10.26L5.53 10.28L6.42 10.47L7.32 10.82L8.21 11.30L9.11 11.87L10.00 12.50L11.67 13.63L13.33 14.45L15.00 14.76L16.67 14.45L18.33 13.63L20.00 12.50L21.67 11.37L23.33 10.55L25.00 10.24L26.67 10.55L28.33 11.37L30.00 12.50L30.89 13.13L31.79 13.70L32.68 14.18L33.58 14.53L34.47 14.72L35.36 14.74" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /><path d="M3.00 18.18L4.17 17.82L5.33 17.76L6.50 17.99L7.67 18.49L8.83 19.19L10.00 20.00L11.67 21.13L13.33 21.95L15.00 22.26L16.67 21.95L18.33 21.13L20.00 20.00L21.67 18.87L23.33 18.05L25.00 17.74L26.67 18.05L28.33 18.87L30.00 20.00L31.17 20.81L32.33 21.51L33.50 22.01L34.67 22.24L35.83 22.18L37.00 21.82" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /><path d="M4.64 25.26L5.53 25.28L6.42 25.47L7.32 25.82L8.21 26.30L9.11 26.87L10.00 27.50L11.67 28.63L13.33 29.45L15.00 29.76L16.67 29.45L18.33 28.63L20.00 27.50L21.67 26.37L23.33 25.55L25.00 25.24L26.67 25.55L28.33 26.37L30.00 27.50L30.89 28.13L31.79 28.70L32.68 29.18L33.58 29.53L34.47 29.72L35.36 29.74" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg><b>Oiliness</b></div>
-        </div>
-        <div class="proto-frame" data-frame="3">
-          <img src="assets/mobile-r3-time.webp" alt="Lucie asks: When will you use it?" width="402" height="874" loading="lazy" />
-          <div class="proto-tile is-spread" aria-hidden="true" style="left:4.975%;top:29.176%;width:28.358%;height:15.561%"><svg viewBox="0 0 40 40" focusable="false"><path d="M3 28H37" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" /><path d="M14.5 28a5.5 5.5 0 0 1 11 0Z" fill="#813F62" /><path d="M9 28a11 11 0 0 1 22 0" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" /><path d="M3.5 28a16.5 16.5 0 0 1 33 0" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 3.4" /></svg><b>Morning</b></div>
-        </div>
-        <div class="proto-frame proto-long" data-frame="4">
-          <div class="proto-scroll" data-proto-scroll>
-            <div class="proto-scroll-inner">
-              <img src="assets/mobile-r4-routine.webp" alt="Lucie's morning routine for a shiny T-zone: cleanse, treat, moisturise, protect" width="402" height="2600" loading="lazy" />
-              <button type="button" class="proto-hit" data-at="4" data-go="3" aria-label="Back" style="left:3.98%;top:2.62%;width:10.95%;height:1.69%"></button>
-              <button type="button" class="proto-hit" data-at="4" data-go="0" aria-label="Close" style="left:85.07%;top:2.62%;width:10.95%;height:1.69%"></button>
-            </div>
+    <div class="mob" data-mob>
+      <div class="mob-phone" data-mob-phone tabindex="0" aria-label="Lucie on mobile. Swipe or use the arrow keys for more; press Enter on Build a routine to start.">
+        <div class="mob-cover" data-mob-cover>
+          <div class="mob-track" data-mob-track>
+            <img src="assets/mobile-routine.webp" alt="Build a routine: morning and night, made for your skin" width="402" height="874" draggable="false" />
+            <img src="assets/mobile-look.webp" alt="Style a new look: lips, eyes and cheeks for wherever you're headed" width="402" height="874" draggable="false" />
+            <img src="assets/mobile-gift.webp" alt="Find a gift: thoughtful picks for the people you love" width="402" height="874" draggable="false" />
           </div>
-          <img class="proto-fixed is-top" src="assets/mobile-r4-status.webp" alt="" width="402" height="62" loading="lazy" />
-          <img class="proto-fixed is-bottom" src="assets/mobile-r4-composer.webp" alt="" width="402" height="154" loading="lazy" />
         </div>
-        <button type="button" class="proto-hit" data-at="0" data-go="1" aria-label="Build a routine" style="left:0.00%;top:0.00%;width:100.00%;height:100.00%"></button>
-        <button type="button" class="proto-hit" data-at="1" data-go="2" aria-label="Shiny T-zone" style="left:4.98%;top:45.88%;width:43.78%;height:15.56%"></button>
-        <button type="button" class="proto-hit" data-at="2" data-go="3" aria-label="Oiliness" style="left:51.24%;top:29.18%;width:43.78%;height:15.56%"></button>
-        <button type="button" class="proto-hit" data-at="3" data-go="4" aria-label="Morning" style="left:4.98%;top:29.18%;width:28.36%;height:15.56%"></button>
-        <button type="button" class="proto-hit" data-at="1" data-go="0" aria-label="Back" style="left:3.98%;top:7.78%;width:10.95%;height:5.03%"></button>
-        <button type="button" class="proto-hit" data-at="1" data-go="0" aria-label="Close" style="left:85.07%;top:7.78%;width:10.95%;height:5.03%"></button>
-        <button type="button" class="proto-hit" data-at="2" data-go="1" aria-label="Back" style="left:3.98%;top:7.78%;width:10.95%;height:5.03%"></button>
-        <button type="button" class="proto-hit" data-at="2" data-go="0" aria-label="Close" style="left:85.07%;top:7.78%;width:10.95%;height:5.03%"></button>
-        <button type="button" class="proto-hit" data-at="3" data-go="2" aria-label="Back" style="left:3.98%;top:7.78%;width:10.95%;height:5.03%"></button>
-        <button type="button" class="proto-hit" data-at="3" data-go="0" aria-label="Close" style="left:85.07%;top:7.78%;width:10.95%;height:5.03%"></button>
+        <div class="mob-chat" data-mob-chat>
+          <div class="mob-status"><span>9:41</span><svg width="82" height="22" viewBox="0 0 82 22" aria-hidden="true" focusable="false"><path d="M3.7 13H2.5a1 1 0 0 0-1 1v2.5a1 1 0 0 0 1 1h1.2a1 1 0 0 0 1-1V14a1 1 0 0 0-1-1m5.2-2.5H7.7a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.2a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1M14.1 8h-1.2a1 1 0 0 0-1 1v7.5a1 1 0 0 0 1 1h1.2a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1m5.2-2.5h-1.2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1.2a1 1 0 0 0 1-1v-10a1 1 0 0 0-1-1" fill="#111827"/><path fill-rule="evenodd" d="M36.57 7.8c2.490 0 4.88.92 6.68 2.58.14.13.36.12.49 0l1.3-1.27a.34.34 0 0 0 0-.5 12.55 12.55 0 0 0-16.930 0 .34.34 0 0 0 0 .5l1.3 1.26c.13.13.34.14.48 0a10 10 0 0 1 6.680-2.57m0 4.22a5.4 5.4 0 0 1 3.67 1.44c.14.13.35.13.48 0l1.3-1.33a.37.37 0 0 0-.01-.52 7.9 7.9 0 0 0-10.88 0 .37.37 0 0 0 0 .52l1.29 1.32c.13.14.34.14.48 0 1-.92 2.31-1.43 3.67-1.43m2.52 2.8q0 .15-.1.28l-2.18 2.45a.3.3 0 0 1-.24.11.3.3 0 0 1-.24-.1l-2.18-2.46a.43.43 0 0 1 .01-.56 3.44 3.44 0 0 1 4.82 0 .4.4 0 0 1 .11.28" clip-rule="evenodd" fill="#111827"/><path fill-rule="evenodd" d="M70.5 5c2.05 0 3.08 0 3.88.34a4.3 4.3 0 0 1 2.28 2.28c.34.8.34 1.83.34 3.88s0 3.08-.34 3.88a4.3 4.3 0 0 1-2.28 2.28c-.8.34-1.83.34-3.88.34h-12c-2.05 0-3.08 0-3.880-.34a4.3 4.3 0 0 1-2.28-2.28c-.34-.8-.34-1.83-.34-3.88s0-3.08.34-3.88a4.3 4.3 0 0 1 2.28-2.28C55.42 5 56.450 5 58.5 5zM58.28 6c-1.85 0-2.77 0-3.48.36a3.3 3.3 0 0 0-1.44 1.44C53 8.5 53 9.43 53 11.28v.44c0 1.85 0 2.77.36 3.48a3.3 3.3 0 0 0 1.44 1.44c.7.36 1.63.36 3.48.36h12.44c1.85 0 2.77 0 3.48-.36a3.3 3.3 0 0 0 1.44-1.44c.36-.7.36-1.63.36-3.48v-.44c0-1.85 0-2.77-.36-3.48a3.3 3.3 0 0 0-1.44-1.44C73.5 6 72.57 6 70.72 6z" clip-rule="evenodd" fill="#111827" opacity=".35"/><path d="M54 11c0-1.4 0-2.1.27-2.63a2.5 2.5 0 0 1 1.1-1.1C55.9 7 56.6 7 58 7h13c1.4 0 2.1 0 2.64.27q.72.37 1.09 1.1C75 8.9 75 9.6 75 11v1c0 1.4 0 2.1-.27 2.64a2.5 2.5 0 0 1-1.1 1.09C73.1 16 72.4 16 71 16H58c-1.4 0-2.1 0-2.63-.27a2.5 2.5 0 0 1-1.1-1.1C54 14.1 54 13.4 54 12z" fill="#111827"/><path d="M78 9.5v4.08a2.2 2.2 0 0 0 1.33-2.040A2.2 2.2 0 0 0 78 9.5" fill="#111827" opacity=".35"/></svg></div>
+          <div class="mob-nav">
+            <button type="button" class="mob-round" data-mob-back aria-label="Back"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M9 2L4 7l5 5" fill="none" stroke="#5E1F42" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button type="button" class="mob-round" data-mob-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2L12 12M12 2L2 12" fill="none" stroke="#5E1F42" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          </div>
+          <div class="mob-scroll" data-mob-scroll><div class="mob-convo" data-mob-convo aria-live="polite"></div></div>
+          <div class="mob-composer" aria-hidden="true">
+            <div class="mob-field"><span>Ask me anything</span><i class="mob-mic"><svg viewBox="0 0 12.92 17.92" width="13" height="18" aria-hidden="true" focusable="false"><path d="M8.333 3.125C8.333 2.628 8.136 2.151 7.784 1.799C7.432 1.448 6.956 1.250 6.458 1.250C5.961 1.250 5.484 1.448 5.133 1.799C4.781 2.151 4.583 2.628 4.583 3.125V8.958C4.583 9.456 4.781 9.932 5.133 10.284C5.484 10.636 5.961 10.833 6.458 10.833C6.956 10.833 7.432 10.636 7.784 10.284C8.136 9.932 8.333 9.456 8.333 8.958V3.125ZM9.583 8.958C9.583 9.787 9.254 10.582 8.668 11.168C8.082 11.754 7.287 12.083 6.458 12.083C5.630 12.083 4.835 11.754 4.249 11.168C3.663 10.582 3.333 9.787 3.333 8.958V3.125C3.333 2.296 3.663 1.502 4.249 0.916C4.835 0.329 5.630 0 6.458 0C7.287 0 8.082 0.329 8.668 0.916C9.254 1.502 9.583 2.296 9.583 3.125V8.958Z" fill="#71274F"/><path d="M0 8.958V7.292C0 6.946 0.280 6.667 0.625 6.667C0.970 6.667 1.250 6.946 1.250 7.292V8.958C1.250 10.340 1.799 11.664 2.776 12.641C3.753 13.618 5.077 14.167 6.458 14.167C7.840 14.167 9.164 13.618 10.141 12.641C11.118 11.664 11.667 10.340 11.667 8.958V7.292C11.667 6.946 11.946 6.667 12.292 6.667C12.637 6.667 12.917 6.946 12.917 7.292V8.958C12.917 10.671 12.237 12.314 11.025 13.525C9.814 14.737 8.171 15.417 6.458 15.417C4.745 15.417 3.102 14.737 1.891 13.525C0.680 12.314 0 10.671 0 8.958Z" fill="#71274F"/><path d="M5.833 17.292V14.792C5.833 14.446 6.113 14.167 6.458 14.167C6.804 14.167 7.083 14.446 7.083 14.792V17.292C7.083 17.637 6.804 17.917 6.458 17.917C6.113 17.917 5.833 17.637 5.833 17.292Z" fill="#71274F"/></svg></i><i class="mob-send"><svg viewBox="0 0 12.92 12.92" width="13" height="13" aria-hidden="true" focusable="false"><path d="M6.064 0.140C6.309 -0.060 6.671 -0.046 6.900 0.183L12.734 6.017C12.978 6.261 12.978 6.656 12.734 6.900C12.489 7.144 12.094 7.144 11.850 6.900L6.458 1.509L1.067 6.900C0.823 7.144 0.427 7.144 0.183 6.900C-0.061 6.656 -0.061 6.261 0.183 6.017L6.016 0.183Z" fill="#71274F"/><path d="M5.833 12.292V0.625C5.833 0.280 6.113 0 6.458 0C6.803 0 7.083 0.280 7.083 0.625V12.292C7.083 12.637 6.803 12.917 6.458 12.917C6.113 12.917 5.833 12.637 5.833 12.292Z" fill="#71274F"/></svg></i></div>
+            <p>Lucie is AI and can make mistakes.</p>
+          </div>
+        </div>
       </div>
-      <div class="applied-screen" style="--i:1"><img src="assets/mobile-look.webp" alt="Lucie on mobile: Style a new look cold-start screen" width="402" height="874" loading="lazy" /></div>
-      <div class="applied-screen" style="--i:2"><img src="assets/mobile-gift.webp" alt="Lucie on mobile: Find a gift cold-start screen" width="402" height="874" loading="lazy" /></div>
     </div>
   </section>
 </main>

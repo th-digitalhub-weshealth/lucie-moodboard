@@ -12,7 +12,7 @@
 <body>
 <main class="page">
   <header class="masthead reveal">
-    <p class="masthead-title">Lucie <span>— Creative direction</span></p>
+    <p class="masthead-title"><button type="button" class="view-toggle" data-view-toggle aria-label="Lucie: switch between creative direction and applied on mobile">Lucie <span data-view-label>— Creative direction</span></button></p>
     <p class="masthead-meta">Atomica · November 2026</p>
   </header>
   <!-- Row 1 · Hero -->
@@ -345,6 +345,51 @@
         <span class="check-add">Add</span>
       </div>
   </template>
+  <!-- Applied on mobile (hidden view: click the "Lucie — Creative direction" title to switch) -->
+  <section class="row row-applied" aria-label="Lucie applied on mobile">
+    <!-- Click-through prototype: tap "Build a routine" → it moves to the centre and becomes the chat;
+         tap Shiny T-zone → Oiliness → Morning to reach the routine. Back/close step back or restart. -->
+    <div class="applied-tile" data-proto>
+      <div class="applied-screen" data-proto-phone data-step="0" style="--i:0">
+        <img class="proto-frame is-on" data-frame="0" src="assets/mobile-routine.webp" alt="Lucie on mobile: Build a routine cold-start screen" width="402" height="874" />
+        <div class="proto-frame" data-frame="1">
+          <img src="assets/mobile-r1-skin.webp" alt="Lucie asks: How does your skin feel by lunchtime?" width="402" height="874" loading="lazy" />
+          <div class="proto-tile" aria-hidden="true" style="left:4.975%;top:45.881%;width:43.781%;height:15.561%"><svg viewBox="0 0 40 40" focusable="false"><path d="M3.71 12.93L4.52 12.77L5.34 12.76L6.15 12.89L6.97 13.16L7.78 13.55L8.60 14.04L9.41 14.58L10.23 15.16L11.04 15.72L11.85 16.24L12.67 16.68L13.48 17.00L14.30 17.20L15.11 17.25L15.93 17.16L16.74 16.93L17.56 16.57L18.37 16.10L19.19 15.57L20.00 15.00L20.81 14.43L21.63 13.90L22.44 13.43L23.26 13.07L24.07 12.84L24.89 12.75L25.70 12.80L26.52 13.00L27.33 13.32L28.15 13.76L28.96 14.28L29.77 14.84L30.59 15.42L31.40 15.96L32.22 16.45L33.03 16.84L33.85 17.11L34.66 17.24L35.48 17.23L36.29 17.07" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /><path d="M3.7 25H11.5M14.6 25H26.3M29.5 25H36.3" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg><b>Shiny T-zone</b><small>Combo</small></div>
+        </div>
+        <div class="proto-frame" data-frame="2">
+          <img src="assets/mobile-r2-focus.webp" alt="Lucie asks: What would you love to change first?" width="402" height="874" loading="lazy" />
+          <div class="proto-tile is-spread" aria-hidden="true" style="left:51.244%;top:29.176%;width:43.781%;height:15.561%"><svg viewBox="0 0 40 40" focusable="false"><path d="M4.64 10.26L5.53 10.28L6.42 10.47L7.32 10.82L8.21 11.30L9.11 11.87L10.00 12.50L11.67 13.63L13.33 14.45L15.00 14.76L16.67 14.45L18.33 13.63L20.00 12.50L21.67 11.37L23.33 10.55L25.00 10.24L26.67 10.55L28.33 11.37L30.00 12.50L30.89 13.13L31.79 13.70L32.68 14.18L33.58 14.53L34.47 14.72L35.36 14.74" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /><path d="M3.00 18.18L4.17 17.82L5.33 17.76L6.50 17.99L7.67 18.49L8.83 19.19L10.00 20.00L11.67 21.13L13.33 21.95L15.00 22.26L16.67 21.95L18.33 21.13L20.00 20.00L21.67 18.87L23.33 18.05L25.00 17.74L26.67 18.05L28.33 18.87L30.00 20.00L31.17 20.81L32.33 21.51L33.50 22.01L34.67 22.24L35.83 22.18L37.00 21.82" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /><path d="M4.64 25.26L5.53 25.28L6.42 25.47L7.32 25.82L8.21 26.30L9.11 26.87L10.00 27.50L11.67 28.63L13.33 29.45L15.00 29.76L16.67 29.45L18.33 28.63L20.00 27.50L21.67 26.37L23.33 25.55L25.00 25.24L26.67 25.55L28.33 26.37L30.00 27.50L30.89 28.13L31.79 28.70L32.68 29.18L33.58 29.53L34.47 29.72L35.36 29.74" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg><b>Oiliness</b></div>
+        </div>
+        <div class="proto-frame" data-frame="3">
+          <img src="assets/mobile-r3-time.webp" alt="Lucie asks: When will you use it?" width="402" height="874" loading="lazy" />
+          <div class="proto-tile is-spread" aria-hidden="true" style="left:4.975%;top:29.176%;width:28.358%;height:15.561%"><svg viewBox="0 0 40 40" focusable="false"><path d="M3 28H37" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" /><path d="M14.5 28a5.5 5.5 0 0 1 11 0Z" fill="#813F62" /><path d="M9 28a11 11 0 0 1 22 0" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" /><path d="M3.5 28a16.5 16.5 0 0 1 33 0" fill="none" stroke="#813F62" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 3.4" /></svg><b>Morning</b></div>
+        </div>
+        <div class="proto-frame proto-long" data-frame="4">
+          <div class="proto-scroll" data-proto-scroll>
+            <div class="proto-scroll-inner">
+              <img src="assets/mobile-r4-routine.webp" alt="Lucie's morning routine for a shiny T-zone: cleanse, treat, moisturise, protect" width="402" height="2600" loading="lazy" />
+              <button type="button" class="proto-hit" data-at="4" data-go="3" aria-label="Back" style="left:3.98%;top:2.62%;width:10.95%;height:1.69%"></button>
+              <button type="button" class="proto-hit" data-at="4" data-go="0" aria-label="Close" style="left:85.07%;top:2.62%;width:10.95%;height:1.69%"></button>
+            </div>
+          </div>
+          <img class="proto-fixed is-top" src="assets/mobile-r4-status.webp" alt="" width="402" height="62" loading="lazy" />
+          <img class="proto-fixed is-bottom" src="assets/mobile-r4-composer.webp" alt="" width="402" height="154" loading="lazy" />
+        </div>
+        <button type="button" class="proto-hit" data-at="0" data-go="1" aria-label="Build a routine" style="left:0.00%;top:0.00%;width:100.00%;height:100.00%"></button>
+        <button type="button" class="proto-hit" data-at="1" data-go="2" aria-label="Shiny T-zone" style="left:4.98%;top:45.88%;width:43.78%;height:15.56%"></button>
+        <button type="button" class="proto-hit" data-at="2" data-go="3" aria-label="Oiliness" style="left:51.24%;top:29.18%;width:43.78%;height:15.56%"></button>
+        <button type="button" class="proto-hit" data-at="3" data-go="4" aria-label="Morning" style="left:4.98%;top:29.18%;width:28.36%;height:15.56%"></button>
+        <button type="button" class="proto-hit" data-at="1" data-go="0" aria-label="Back" style="left:3.98%;top:7.78%;width:10.95%;height:5.03%"></button>
+        <button type="button" class="proto-hit" data-at="1" data-go="0" aria-label="Close" style="left:85.07%;top:7.78%;width:10.95%;height:5.03%"></button>
+        <button type="button" class="proto-hit" data-at="2" data-go="1" aria-label="Back" style="left:3.98%;top:7.78%;width:10.95%;height:5.03%"></button>
+        <button type="button" class="proto-hit" data-at="2" data-go="0" aria-label="Close" style="left:85.07%;top:7.78%;width:10.95%;height:5.03%"></button>
+        <button type="button" class="proto-hit" data-at="3" data-go="2" aria-label="Back" style="left:3.98%;top:7.78%;width:10.95%;height:5.03%"></button>
+        <button type="button" class="proto-hit" data-at="3" data-go="0" aria-label="Close" style="left:85.07%;top:7.78%;width:10.95%;height:5.03%"></button>
+      </div>
+      <div class="applied-screen" style="--i:1"><img src="assets/mobile-look.webp" alt="Lucie on mobile: Style a new look cold-start screen" width="402" height="874" loading="lazy" /></div>
+      <div class="applied-screen" style="--i:2"><img src="assets/mobile-gift.webp" alt="Lucie on mobile: Find a gift cold-start screen" width="402" height="874" loading="lazy" /></div>
+    </div>
+  </section>
 </main>
 <script src="script.js"></script>
 </body>

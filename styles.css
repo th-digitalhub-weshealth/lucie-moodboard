@@ -86,6 +86,99 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 }
 .masthead-title { color: var(--plum-deep); font-weight: 500; }
 .masthead-title span { color: var(--muted); font-weight: 400; }
+/* Secret switch: the title is a button that looks like plain text. */
+.view-toggle {
+  all: unset;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+.view-toggle:focus-visible { outline: 2px solid var(--plum); outline-offset: 4px; border-radius: 4px; }
+[data-view-label] { display: inline-block; transition: opacity 250ms var(--ease-out); }
+
+/* Two views on one page: the creative-direction board, and "Applied on mobile". */
+.page:not(.is-applied) > .row-applied,
+.page.is-applied > .row:not(.row-applied) { display: none; }
+.page > .row { transition: opacity 250ms var(--ease-out); }
+.page.is-swapping > .row, .page.is-swapping [data-view-label] { opacity: 0; }
+
+.row-applied { height: auto; }
+/* The three screens sit straight on the page, no bento, square-cornered, as large as the row allows. */
+.applied-tile {
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
+}
+.applied-screen {
+  position: relative;
+  /* Fade in one after another, left to right, each time the view appears. */
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-out), translate 800ms cubic-bezier(0.65, 0, 0.35, 1);
+  transition-delay: calc(var(--i) * 220ms), calc(var(--i) * 220ms), 0ms;
+}
+.page.is-applied.is-shown .applied-screen { opacity: 1; transform: none; }
+.applied-screen img { display: block; width: 100%; height: auto; }
+
+/* Prototype: the other two screens fade away and the first glides to the centre (translate set in JS). */
+.applied-tile.is-playing .applied-screen:not([data-proto-phone]) {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 450ms var(--ease-out);
+}
+.applied-tile.is-returning .applied-screen:not([data-proto-phone]) { transition: opacity 600ms var(--ease-out) 450ms; }
+
+/* Frames cross-fade inside the phone. Frame 0 sets the size; the rest sit on top of it. */
+.proto-frame { opacity: 0; transition: opacity 450ms var(--ease-out); }
+.proto-frame:not([data-frame="0"]) { position: absolute; inset: 0; }
+.proto-frame.is-on, .proto-frame[data-frame="0"] { opacity: 1; } /* the cover stays underneath and sets the size */
+
+/* Unselected answer tiles (Paper's unselected option style), laid exactly over the screen's
+   pre-selected tile. Tapping fades this away to reveal the selection, then the next screen comes in.
+   Sized in units of the 402-wide screen so it lines up at any width. */
+[data-proto-phone] { container-type: inline-size; }
+.proto-frame img { display: block; width: 100%; height: auto; }
+.proto-tile {
+  --u: calc(100cqw / 402);
+  position: absolute;
+  display: flex; flex-direction: column; gap: calc(var(--u) * 4);
+  padding: calc(var(--u) * 22) calc(var(--u) * 16) calc(var(--u) * 20);
+  border: 1px solid #ede6ec;
+  border-radius: calc(var(--u) * 16);
+  background: #fffefe;
+  transition: opacity 260ms var(--ease-out);
+}
+.proto-tile.is-spread { justify-content: space-between; gap: 0; }
+.proto-tile svg { width: calc(var(--u) * 30); height: calc(var(--u) * 30); flex: none; }
+.proto-tile:not(.is-spread) svg { margin-bottom: calc(var(--u) * 18); }
+.proto-tile b { font-size: calc(var(--u) * 16); line-height: calc(var(--u) * 20); font-weight: 500; color: var(--ink); }
+.proto-tile small { font-size: calc(var(--u) * 13); line-height: calc(var(--u) * 16); color: #8a7a86; }
+.proto-frame.is-picked .proto-tile { opacity: 0; }
+
+/* The long routine screen scrolls under a fixed status bar and composer. */
+.proto-long { overflow: clip; }
+.proto-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.proto-scroll::-webkit-scrollbar { display: none; }
+.proto-scroll-inner { position: relative; padding-bottom: 38.3%; /* room for the fixed composer */ }
+.proto-fixed { position: absolute; left: 0; width: 100%; pointer-events: none; }
+.proto-fixed.is-top { top: 0; }
+.proto-fixed.is-bottom { bottom: 0; }
+
+/* Hotspots: invisible, only on the current frame; a soft lilac press confirms the tap. */
+.proto-hit {
+  position: absolute;
+  z-index: 1000;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: #e1c6ff00;
+  cursor: pointer;
+  transition: background-color 200ms var(--ease-out), scale 160ms var(--ease-out);
+}
+.proto-hit[data-go="1"] { border-radius: 0; }
+.proto-hit[hidden] { display: none; }
+.proto-hit:focus-visible { outline: 2px solid var(--plum); outline-offset: 2px; }
 
 .row { display: flex; gap: var(--gap); }
 .row-1 { height: 640px; }
@@ -1046,6 +1139,8 @@ button.chip:active { transform: scale(0.97); }
   .routine-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
   .routine-sub { min-height: 36px; }
   .routine-sk { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
+  .applied-tile { grid-template-columns: 1fr; justify-items: center; }
+  .applied-screen { width: min(360px, 100%); }
   .taps { padding: 28px 24px; }
   .taps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tap-opt { height: 116px; }
@@ -1062,7 +1157,7 @@ button.chip:active { transform: scale(0.97); }
 /* ---------- Reduced motion: keep the fades, drop the movement ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .js .reveal { transform: none; }
+  .js .reveal, .applied-screen { transform: none; translate: none !important; }
   .js .reveal.is-in { transition: opacity 400ms ease var(--reveal-delay, 0ms); }
   .wash > svg, .glow, .ask-btn, .spin, .logo-sheen, .star-glint,
   .ask-cursor, .ask-btn::after, .ask-orb .star, .ask-label,

@@ -38,6 +38,122 @@
     document.querySelectorAll('[data-logo-shimmer], [data-live]').forEach((el) => liveObserver.observe(el));
   }
 
+  /* ---------- Secret view switch: the title flips between the board and "Applied on mobile" ---------- */
+
+  const page = document.querySelector('.page');
+  const toggle = document.querySelector('[data-view-toggle]');
+  if (page && toggle) {
+    const label = toggle.querySelector('[data-view-label]');
+    const baseTitle = document.title;
+    const setView = (applied) => {
+      page.classList.remove('is-shown');
+      page.classList.toggle('is-applied', applied);
+      // Next frame, so the screens start hidden and fade in one after another.
+      if (applied) requestAnimationFrame(() => requestAnimationFrame(() => page.classList.add('is-shown')));
+      label.textContent = applied ? '— Applied on mobile' : '— Creative direction';
+      document.title = applied ? 'Lucie — Applied on mobile' : baseTitle;
+      history.replaceState(null, '', applied ? '#applied' : location.pathname + location.search);
+    };
+    if (location.hash === '#applied') setView(true);
+    addEventListener('hashchange', () => setView(location.hash === '#applied'));
+    toggle.addEventListener('click', async () => {
+      const applied = !page.classList.contains('is-applied');
+      if (!reduceMotion) {
+        page.classList.add('is-swapping');
+        await wait(260);
+      }
+      setView(applied);
+      scrollTo(0, 0);
+      requestAnimationFrame(() => page.classList.remove('is-swapping'));
+    });
+  }
+
+  /* ---------- Applied on mobile: click-through prototype ----------
+     Tap "Build a routine": the other screens fade, it glides to the centre and becomes the chat.
+     Each question arrives with nothing selected; tapping Shiny T-zone → Oiliness → Morning selects it,
+     then moves on to the routine. Back steps back; close restarts. */
+
+  const proto = document.querySelector('[data-proto]');
+  if (proto) {
+    const phone = proto.querySelector('[data-proto-phone]');
+    const frames = [...phone.querySelectorAll('[data-frame]')];
+    const hits = [...proto.querySelectorAll('.proto-hit')];
+    const scroller = proto.querySelector('[data-proto-scroll]');
+    const centre = proto.querySelectorAll('.applied-screen')[1];
+    let step = 0;
+    let busy = false;
+
+    // Each new frame fades in on top of the last; the one underneath is cleared once it's covered,
+    // so a cross-fade never shows the cover through two half-faded frames.
+    const cover = frames[0];
+    let layer = 1;
+    let clear;
+    const showFrame = (n) => {
+      step = n;
+      phone.dataset.step = n;
+      clearTimeout(clear);
+      if (n === 0) {
+        frames.forEach((f) => { if (f !== cover) f.classList.remove('is-on'); });
+      } else {
+        const f = frames[n];
+        f.classList.remove('is-picked'); // arriving (or coming back) shows every option unselected
+        f.style.zIndex = ++layer;
+        f.classList.add('is-on');
+        clear = setTimeout(() => frames.forEach((g) => { if (g !== cover && g !== f) g.classList.remove('is-on'); }), 480);
+      }
+      hits.forEach((h) => { h.hidden = +h.dataset.at !== n; });
+      if (n === 4) scroller.scrollTop = 0;
+    };
+    const glide = (toCentre) => {
+      const dx = toCentre ? centre.offsetLeft - phone.offsetLeft : 0;
+      phone.style.translate = dx ? `${dx}px 0` : '';
+    };
+
+    async function go(n) {
+      if (busy || n === step) return;
+      busy = true;
+      if (step === 0 && n > 0) {
+        // Start: make room, glide to the centre, then become the chat.
+        proto.classList.remove('is-returning');
+        proto.classList.add('is-playing');
+        await wait(reduceMotion ? 0 : 200);
+        glide(true);
+        await wait(reduceMotion ? 0 : 750);
+        showFrame(n);
+      } else if (n === 0) {
+        // Restart: back to the cover, glide home, bring the others back.
+        showFrame(0);
+        await wait(reduceMotion ? 0 : 450);
+        proto.classList.add('is-returning');
+        proto.classList.remove('is-playing');
+        glide(false);
+        await wait(reduceMotion ? 0 : 800);
+      } else {
+        showFrame(n);
+        await wait(reduceMotion ? 0 : 450);
+      }
+      busy = false;
+    }
+
+    hits.forEach((h) => h.addEventListener('click', async () => {
+      const n = +h.dataset.go;
+      if (n > step && step > 0) { // answer tap: the option selects, then the next screen comes in
+        if (busy) return;
+        frames[step].classList.add('is-picked');
+        busy = true;
+        await wait(reduceMotion ? 150 : 550);
+        busy = false;
+      }
+      go(n);
+    }));
+    addEventListener('resize', () => { if (step > 0) glide(true); });
+    // Leaving the mobile view resets the prototype.
+    document.querySelector('[data-view-toggle]')?.addEventListener('click', () => {
+      showFrame(0); glide(false); proto.classList.remove('is-playing', 'is-returning'); busy = false;
+    });
+    showFrame(0);
+  }
+
   /* ---------- Thinking verbs ---------- */
 
   const verbsTile = document.querySelector('[data-verbs]');

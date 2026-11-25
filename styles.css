@@ -616,10 +616,9 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   flex-direction: column;
   gap: 28px;
   border-radius: var(--radius-m);
-  /* script.js grows it in two stages: first exchange, then room for the follow-up. */
+  /* Fixed height: every message is always in the layout (just invisible until shown), so the tile never
+     resizes and nothing below it moves. Skeletons fill the space while an answer is on its way. */
 }
-/* The follow-up takes no space until stage 2. */
-.thread [hidden] { display: none !important; }
 
 [data-step] {
   opacity: 0;
@@ -685,6 +684,34 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 .compat-cell.pm { background: linear-gradient(in oklab 160deg, #e1c6ff80, #fffefe); border-left: 1px solid #ead7ff; }
 
 .feedback { display: flex; gap: 4px; margin-top: -6px; }
+
+/* Skeletons: shown while Lucie thinks, in the exact spot her card or products will land, then
+   cross-faded into the real thing. The routine skeleton only appears once the follow-up is asked. */
+.slot { display: grid; }
+.slot > * { grid-area: 1 / 1; }
+.sk i { display: block; position: relative; overflow: clip; background: #f4eff6; border-radius: 6px; }
+.sk i::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, #ffffffb3, transparent);
+  transform: translateX(-100%);
+  animation: sweep 1.4s var(--ease-in-out) infinite;
+}
+.sk:not(.on) i::after { animation-play-state: paused; }
+.sk-bar { height: 14px; }
+.sk-dot { width: 22px; height: 22px; border-radius: 999px !important; }
+.w40 { width: 40%; } .w30 { width: 30%; }
+.compat-sk { display: flex; overflow: clip; border: 1px solid #f0e8f4; border-radius: 18px; }
+.compat-sk > div { flex: 1; display: flex; flex-direction: column; gap: 22px; padding: 20px 18px 21px; }
+.compat-sk > div + div { border-left: 1px solid #f0e8f4; }
+.routine-sk { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-content: start; }
+.routine-sk > div { display: flex; flex-direction: column; gap: 10px; }
+.routine-sk .sk-t { width: 55%; height: 20px; }
+.routine-sk .sk-s { width: 80%; margin-bottom: 6px; }
+.routine-sk .sk-img { height: 150px; border-radius: 14px; }
+.routine-sk .sk-n { width: 90%; margin-top: 4px; }
+.routine-sk .sk-n2 { width: 60%; }
+.routine-sk .sk-p { width: 30%; height: 16px; margin-top: 4px; }
 
 /* Follow-up: Lucie builds a morning routine (Paper "Conversation" 1OM-0, one selected product per step). */
 .answer-routine { width: 100%; }
@@ -1018,6 +1045,7 @@ button.chip:active { transform: scale(0.97); }
   .answer { width: 100%; }
   .routine-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
   .routine-sub { min-height: 36px; }
+  .routine-sk { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
   .taps { padding: 28px 24px; }
   .taps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tap-opt { height: 116px; }
@@ -1041,7 +1069,7 @@ button.chip:active { transform: scale(0.97); }
   .lucie-pill, .lucie-pill-label,
   .answer.is-thinking .answer-star .spin, .verbs-star .spin,
   .verb, .verb.is-leaving,
-  .skeleton .product-img::after, .skeleton .bar::after { animation: none !important; }
+  .skeleton .product-img::after, .skeleton .bar::after, .sk i::after { animation: none !important; }
   .lucie-pill-label { background-position: 0% 0; }
   .routine-step, .routine,
   [data-step], .bubble, .compat, .reply .word, .product, .verb { transform: none !important; filter: none !important; }

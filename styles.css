@@ -129,12 +129,95 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 }
 .mob-phone:focus-visible { box-shadow: 0 0 0 3px var(--plum); }
 
-/* Covers: swipe through; the first opens the chat. */
-.mob-cover { position: absolute; inset: 0; cursor: grab; transition: opacity 350ms var(--ease-out), scale 450ms var(--ease-out); }
+/* Covers (Paper 5T5 / 4G9 / 4VE): only the photo and its line swipe. The aurora, status bar,
+   story bars, wordmark, close button and composer stay put, like the real app shell. */
+.mob-cover {
+  position: absolute; inset: 0; cursor: grab;
+  background:
+    radial-gradient(ellipse 80% 35% at 0% 55% in oklab, #e6d2ff 0%, #e6d2ff00 100%),
+    radial-gradient(ellipse 70% 30% at 100% 62% in oklab, #fce1d8, #fce1d800),
+    radial-gradient(ellipse 90% 30% at 30% 100% in oklab, #d2eff2, #d2eff200),
+    radial-gradient(ellipse 80% 30% at 100% 100% in oklab, #ead7ff, #ead7ff00),
+    #fffdfd;
+  transition: opacity 350ms var(--ease-out);
+}
 .mob-cover:active { cursor: grabbing; }
-.mob-track { display: flex; height: 100%; will-change: transform; }
-.mob-track img { flex: none; width: 402px; height: 874px; display: block; user-select: none; -webkit-user-drag: none; }
-.mob-phone.is-chat .mob-cover { opacity: 0; scale: 1.02; pointer-events: none; }
+.mob-track { position: absolute; inset: 0; display: flex; will-change: transform; transition: scale 450ms var(--ease-out); }
+.mob-slide { position: relative; flex: none; width: 402px; height: 874px; user-select: none; }
+.mob-photo { position: absolute; inset: 0; }
+.mob-photo-img { position: absolute; inset: 0; background-repeat: no-repeat; }
+.mob-slide--routine .mob-photo {
+  background:
+    radial-gradient(ellipse 80% 60% at 0% 0% in oklab, #dcc2ff, #dcc2ff00),
+    radial-gradient(ellipse 70% 55% at 100% 0% in oklab, #fadacb, #fadacb00),
+    radial-gradient(ellipse 80% 55% at 0% 100% in oklab, #c4ecf0, #c4ecf000),
+    #f4eef6;
+  -webkit-mask-image: linear-gradient(#000 0%, #000 48%, transparent 80%);
+          mask-image: linear-gradient(#000 0%, #000 48%, transparent 80%);
+}
+.mob-slide--routine .mob-photo-img {
+  inset: 100px 0 auto; height: 603px;
+  background-image: url(assets/cover-routine.webp);
+  background-position: -91px -96px; background-size: 125%;
+  mix-blend-mode: multiply;
+  -webkit-mask-image: linear-gradient(transparent 0, #000 90px, #000 100%);
+          mask-image: linear-gradient(transparent 0, #000 90px, #000 100%);
+}
+.mob-slide--look .mob-photo {
+  background:
+    url(assets/cover-look.webp) 50% 14px / auto 86% no-repeat,
+    radial-gradient(ellipse 80% 60% at 0% 0% in oklab, #dcc2ff, #dcc2ff00),
+    radial-gradient(ellipse 70% 55% at 100% 0% in oklab, #fadacb, #fadacb00),
+    radial-gradient(ellipse 80% 55% at 0% 100% in oklab, #c4ecf0, #c4ecf000),
+    #fdf4f2;
+  -webkit-mask-image: linear-gradient(#000 0%, #000 50%, transparent 74%);
+          mask-image: linear-gradient(#000 0%, #000 50%, transparent 74%);
+}
+.mob-slide--gift .mob-photo {
+  background:
+    radial-gradient(ellipse 80% 45% at 0% 0% in oklab, #dcc2ff, #dcc2ff00),
+    radial-gradient(ellipse 70% 40% at 100% 0% in oklab, #fadacb, #fadacb00),
+    radial-gradient(ellipse 80% 40% at 0% 60% in oklab, #c4ecf0, #c4ecf000),
+    url(assets/cover-gift.webp) 30% 0 / auto 96% no-repeat,
+    #fffdfd;
+  background-blend-mode: multiply;
+  -webkit-mask-image: linear-gradient(#000 0%, #000 50%, transparent 76%);
+          mask-image: linear-gradient(#000 0%, #000 50%, transparent 76%);
+}
+.mob-line {
+  position: absolute; left: 0; right: 0; bottom: 151px;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 0 24px 22px;
+}
+.mob-slide--look .mob-line, .mob-slide--gift .mob-line { gap: 8px; }
+.mob-line h3 { margin: 0; font-size: 37px; font-weight: 500; line-height: 0.9; letter-spacing: -0.03em; color: #5e1f42; }
+.mob-slide--look .mob-line h3, .mob-slide--gift .mob-line h3 { letter-spacing: -0.02em; }
+.mob-line p { font-size: 16px; line-height: 22px; color: #6b3a55; }
+
+.mob-top {
+  position: absolute; top: 62px; left: 0; right: 0; z-index: 2;
+  display: flex; flex-direction: column; gap: 18px;
+  padding: 4px 20px 0;
+  pointer-events: none;
+}
+.mob-bars { display: flex; gap: 4px; }
+.mob-bars i { flex: 1; height: 3px; border-radius: 99px; background: #5e1f4229; overflow: hidden; }
+.mob-bars b { display: block; height: 100%; background: #5e1f42; transform: scaleX(0); transform-origin: 0 50%; }
+.mob-top-row { display: flex; align-items: center; justify-content: space-between; }
+.mob-logo { display: block; }
+.mob-coach {
+  position: absolute; top: 372px; left: 0; right: 0; height: 228px; z-index: 2;
+  display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 8px;
+  color: #fff; font-size: 15px; font-weight: 500; letter-spacing: 0.01em;
+  filter: drop-shadow(0 1px 2px #3a122966) drop-shadow(0 4px 16px #3a122980);
+  pointer-events: none;
+  transition: opacity 300ms var(--ease-out), translate 300ms var(--ease-out);
+}
+.mob-coach svg { animation: coach-nudge 2.4s var(--ease-in-out, cubic-bezier(0.77, 0, 0.175, 1)) infinite; }
+@keyframes coach-nudge { 0%, 55%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } }
+.mob-coach.is-gone { opacity: 0; translate: 0 6px; }
+.mob-phone.is-chat .mob-cover { opacity: 0; pointer-events: none; }
+.mob-phone.is-chat .mob-track { scale: 1.02; }
 
 /* Chat sheet (Paper 1JI): status bar, round nav buttons, scrolling conversation, composer. */
 .mob-chat {
@@ -156,8 +239,14 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 46px 0 62px;
   font: 600 17px/22px system-ui, -apple-system, sans-serif; color: #111827;
-  background: linear-gradient(#fffdfd 70%, #fffdfd00);
+  pointer-events: none;
 }
+.mob-status::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(#fffdfd 70%, #fffdfd00);
+  opacity: 0; transition: opacity 350ms var(--ease-out);
+}
+.mob-phone.is-chat .mob-status::before { opacity: 1; }
 .mob-nav { flex: none; height: 60px; display: flex; justify-content: space-between; padding: 0 20px 24px; }
 .mob-round {
   width: 36px; height: 36px; padding: 0;
@@ -174,7 +263,8 @@ svg { display: block; flex-shrink: 0; overflow: visible; }
 .mob-convo { display: flex; flex-direction: column; gap: 24px; padding: 4px 20px 28px; transition: opacity 220ms var(--ease-out), translate 220ms var(--ease-out); }
 .mob-convo.is-leaving { opacity: 0; translate: 0 -8px; }
 
-.mob-composer { flex: none; height: 151px; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 16px 16px; }
+.mob-composer-space { flex: none; height: 151px; }
+.mob-composer { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; pointer-events: none; height: 151px; background: #fffefe99; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 16px 16px; }
 .mob-field {
   align-self: stretch;
   display: flex; align-items: center; gap: 4px;
@@ -1257,7 +1347,7 @@ button.chip:active { transform: scale(0.97); }
   .mob-step.is-loading .mob-prod-img::after { animation: none; }
   .js .reveal.is-in { transition: opacity 400ms ease var(--reveal-delay, 0ms); }
   .wash > svg, .glow, .ask-btn, .spin, .logo-sheen, .star-glint,
-  .ask-cursor, .ask-btn::after, .ask-orb .star, .ask-label,
+  .ask-cursor, .ask-btn::after, .ask-orb .star, .ask-label, .mob-coach svg,
   .lucie-pill, .lucie-pill-label,
   .answer.is-thinking .answer-star .spin, .verbs-star .spin,
   .verb, .verb.is-leaving,

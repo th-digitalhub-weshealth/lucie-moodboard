@@ -121,16 +121,38 @@
     new ResizeObserver(() => { scale = fit(); }).observe(mob.parentElement);
 
     /* Covers: drag/swipe, trackpad, arrow keys. A tap (no drag) on the first opens the chat. */
+    /* Story bars: the current cover's bar fills, then the next cover slides in. Paused while
+       dragging, in the chat, or with the phone off-screen; no autoplay with reduced motion. */
+    const bars = [...mob.querySelectorAll('[data-mob-bars] b')];
+    const coach = mob.querySelector('[data-mob-coach]');
+    const STORY = 7000;
+    let story = null;
+    let onScreen = false;
     let slide = 0;
+    const storyRuns = () => onScreen && !drag && !phone.classList.contains('is-chat');
+    const syncStory = () => { if (!story) return; storyRuns() ? story.play() : story.pause(); };
+    const startStory = () => {
+      story?.cancel();
+      story = null;
+      bars.forEach((b, i) => { b.style.transform = `scaleX(${i < slide || (reduceMotion && i === slide) ? 1 : 0})`; });
+      if (reduceMotion) return;
+      story = bars[slide].animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: STORY, easing: 'linear', fill: 'forwards' });
+      story.onfinish = () => setSlide(slide + 1);
+      syncStory();
+    };
     const setSlide = (i, animate = true) => {
       slide = (i + 3) % 3;
-      track.style.transition = animate && !reduceMotion ? 'transform 520ms cubic-bezier(0.32, 0.72, 0, 1)' : 'none';
+      track.style.transition = animate && !reduceMotion ? 'transform 520ms cubic-bezier(0.32, 0.72, 0, 1), scale 450ms var(--ease-out)' : 'none';
       track.style.transform = `translateX(${-slide * W}px)`;
+      startStory();
     };
+    const dismissCoach = () => coach.classList.add('is-gone');
+    new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; syncStory(); }, { threshold: 0.4 }).observe(phone);
     let drag = null;
     cover.addEventListener('pointerdown', (e) => {
       drag = { x: e.clientX, t: performance.now(), dx: 0 };
       track.style.transition = 'none';
+      story?.pause();
       cover.setPointerCapture(e.pointerId);
     });
     cover.addEventListener('pointermove', (e) => {
@@ -143,10 +165,14 @@
       const { dx, t } = drag;
       drag = null;
       const fast = Math.abs(dx) / (performance.now() - t) > 0.45;
-      if (Math.abs(dx) < 6) { setSlide(slide); if (slide === 0) enterChat(); return; }
-      if (dx < -60 || (fast && dx < 0)) setSlide(slide + 1);
-      else if (dx > 60 || (fast && dx > 0)) setSlide(slide - 1);
-      else setSlide(slide);
+      if (Math.abs(dx) < 6) {
+        track.style.transform = `translateX(${-slide * W}px)`;
+        if (slide === 0) enterChat(); else syncStory();
+        return;
+      }
+      if (dx < -60 || (fast && dx < 0)) { dismissCoach(); setSlide(slide + 1); }
+      else if (dx > 60 || (fast && dx > 0)) { dismissCoach(); setSlide(slide - 1); }
+      else { track.style.transition = 'transform 520ms cubic-bezier(0.32, 0.72, 0, 1)'; track.style.transform = `translateX(${-slide * W}px)`; syncStory(); }
     };
     cover.addEventListener('pointerup', endDrag);
     cover.addEventListener('pointercancel', endDrag);
@@ -155,12 +181,13 @@
       if (Math.abs(e.deltaX) < 25 || Math.abs(e.deltaX) < Math.abs(e.deltaY) || performance.now() < wheelLock) return;
       e.preventDefault();
       wheelLock = performance.now() + 650;
+      dismissCoach();
       setSlide(slide + (e.deltaX > 0 ? 1 : -1));
     }, { passive: false });
     phone.addEventListener('keydown', (e) => {
       if (phone.classList.contains('is-chat')) return;
-      if (e.key === 'ArrowRight') setSlide(slide + 1);
-      if (e.key === 'ArrowLeft') setSlide(slide - 1);
+      if (e.key === 'ArrowRight') { dismissCoach(); setSlide(slide + 1); }
+      if (e.key === 'ArrowLeft') { dismissCoach(); setSlide(slide - 1); }
       if ((e.key === 'Enter' || e.key === ' ') && slide === 0) { e.preventDefault(); enterChat(); }
     });
 
@@ -266,6 +293,7 @@
     function enterChat() {
       answers.length = 0;
       phone.classList.add('is-chat');
+      syncStory();
       setTimeout(() => render(0), reduceMotion ? 0 : 350);
     }
     function exitChat() {
